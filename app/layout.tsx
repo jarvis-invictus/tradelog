@@ -1,5 +1,12 @@
 import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
 import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: 'TradeLog',
@@ -13,7 +20,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#111827',
+  themeColor: '#0C0C0F',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -26,8 +33,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-surface text-white antialiased">
+    <html lang="en" className={`dark ${inter.variable}`}>
+      <body className={`${inter.className} bg-ink-bg text-text-primary antialiased`}>
         {children}
       </body>
     </html>

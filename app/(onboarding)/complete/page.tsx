@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { CheckCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function OnboardingCompletePage() {
@@ -21,22 +20,24 @@ export default function OnboardingCompletePage() {
   }, [supabase, router])
 
   return (
-    <div className="flex-1 flex flex-col items-center justify-center px-6 text-center gap-5 min-h-screen">
+    <div className="flex-1 flex flex-col items-center justify-center px-8 text-center gap-5 min-h-screen">
       <div className="relative">
-        <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center">
-          <CheckCircle size={48} className="text-green-400" strokeWidth={1.5} />
+        <div className="w-[72px] h-[72px] rounded-full bg-up/10 border border-up/20 flex items-center justify-center">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="20 6 9 17 4 12" />
+          </svg>
         </div>
-        <div className="absolute inset-0 rounded-full border border-green-500/30 animate-ping" />
+        <div className="absolute inset-0 rounded-full border border-up/20 animate-ping" />
       </div>
       <div>
-        <h1 className="text-2xl font-bold text-white mb-2">You&apos;re all set!</h1>
-        <p className="text-gray-400 text-sm">Taking you to your dashboard...</p>
+        <h1 className="text-[22px] font-bold text-text-primary tracking-tight mb-2">You&apos;re all set</h1>
+        <p className="text-text-secondary text-[13px]">Taking you to your dashboard…</p>
       </div>
-      <div className="flex gap-1.5 mt-1">
+      <div className="flex gap-1.5 mt-2">
         {[0, 1, 2].map((i) => (
           <div
             key={i}
-            className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-bounce"
+            className="w-1 h-1 rounded-full bg-accent animate-bounce"
             style={{ animationDelay: `${i * 0.15}s` }}
           />
         ))}

@@ -1,11 +1,7 @@
-// M2.2 — Language picker (EN/HI/MR) saves to Supabase users.language, routes to /mt5-connect
-// TODO: Build in M2.2 milestone session
-
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Check } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 const LANGUAGES = [
@@ -34,37 +30,42 @@ export default function LanguagePage() {
 
   return (
     <div className="flex-1 flex flex-col px-6 py-10 min-h-screen">
-      {/* Progress */}
       <div className="mb-8">
-        <div className="flex gap-1.5 mb-5">
-          {[1,2,3].map((s) => (
-            <div key={s} className={`flex-1 h-1 rounded-full ${s === 1 ? 'bg-blue-500' : 'bg-gray-800'}`} />
-          ))}
+        <div className="flex gap-1.5 mb-6">
+          <div className="flex-1 h-[3px] rounded-full bg-accent" />
+          <div className="flex-1 h-[3px] rounded-full bg-ink-muted" />
+          <div className="flex-1 h-[3px] rounded-full bg-ink-muted" />
         </div>
-        <p className="text-gray-500 text-xs mb-1">Step 1 of 3</p>
-        <h1 className="text-2xl font-bold text-white">Choose your language</h1>
-        <p className="text-gray-400 text-sm mt-1">AI feedback will be delivered in this language</p>
+        <p className="text-text-tertiary text-xs font-medium mb-1">STEP 1 OF 3</p>
+        <h1 className="text-[22px] font-bold text-text-primary tracking-tight">Language</h1>
+        <p className="text-text-secondary text-[13px] mt-1">AI feedback will be in this language</p>
       </div>
 
-      <div className="flex flex-col gap-3 flex-1">
+      <div className="flex flex-col gap-2.5 flex-1">
         {LANGUAGES.map((lang) => (
           <button
             key={lang.code}
             onClick={() => setSelected(lang.code)}
-            className={`w-full flex items-center justify-between px-4 py-4 rounded-2xl border transition-all ${
+            className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl border transition-all ${
               selected === lang.code
-                ? 'border-blue-500 bg-blue-600/10'
-                : 'border-gray-800 bg-gray-900 hover:border-gray-700'
+                ? 'border-accent/60 bg-accent/8'
+                : 'border-ink-border bg-ink-surface hover:border-ink-muted'
             }`}
           >
             <div className="text-left">
-              <p className={`font-semibold text-base ${selected === lang.code ? 'text-white' : 'text-gray-200'}`}>{lang.native}</p>
-              <p className="text-xs text-gray-500 mt-0.5">{lang.label}</p>
+              <p className={`font-semibold text-[15px] ${selected === lang.code ? 'text-text-primary' : 'text-text-primary/80'}`}>
+                {lang.native}
+              </p>
+              <p className="text-text-tertiary text-[12px] mt-0.5">{lang.label}</p>
             </div>
-            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-              selected === lang.code ? 'border-blue-500 bg-blue-500' : 'border-gray-700'
+            <div className={`w-[18px] h-[18px] rounded-full border-[1.5px] flex items-center justify-center transition-all ${
+              selected === lang.code ? 'border-accent bg-accent' : 'border-ink-muted'
             }`}>
-              {selected === lang.code && <Check size={11} className="text-white" strokeWidth={3} />}
+              {selected === lang.code && (
+                <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+                  <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              )}
             </div>
           </button>
         ))}
@@ -73,9 +74,9 @@ export default function LanguagePage() {
       <button
         onClick={handleContinue}
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white py-3.5 rounded-xl font-semibold text-base transition mt-8"
+        className="w-full bg-accent hover:bg-accent/90 active:scale-[0.98] disabled:opacity-40 text-white py-4 rounded-2xl font-semibold text-[15px] transition-all mt-6"
       >
-        {loading ? 'Saving...' : 'Continue →'}
+        {loading ? 'Saving…' : 'Continue'}
       </button>
     </div>
   )

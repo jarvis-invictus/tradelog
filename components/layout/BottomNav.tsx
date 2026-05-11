@@ -2,33 +2,37 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, BarChart2, Calculator, BookMarked, FileText } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
 
-const NAV_ITEMS: { href: string; label: string; Icon: LucideIcon }[] = [
-  { href: '/home',       label: 'Home',      Icon: Home },
-  { href: '/analytics',  label: 'Analytics', Icon: BarChart2 },
-  { href: '/calculator', label: 'Calc',      Icon: Calculator },
-  { href: '/rules',      label: 'Rules',     Icon: BookMarked },
-  { href: '/report',     label: 'Report',    Icon: FileText },
+const NAV_ITEMS = [
+  { href: '/home',       label: 'Home' },
+  { href: '/analytics',  label: 'Analytics' },
+  { href: '/calculator', label: 'Calc' },
+  { href: '/rules',      label: 'Rules' },
+  { href: '/report',     label: 'Report' },
 ]
 
 export default function BottomNav() {
   const pathname = usePathname()
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur border-t border-gray-800 flex">
-      {NAV_ITEMS.map(({ href, label, Icon }) => {
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-ink-surface/95 backdrop-blur-md border-t border-ink-border flex pb-safe-bottom">
+      {NAV_ITEMS.map(({ href, label }) => {
         const active = pathname.startsWith(href)
         return (
           <Link
             key={href}
             href={href}
-            className={`flex-1 flex flex-col items-center justify-center py-2.5 gap-1 transition ${
-              active ? 'text-blue-400' : 'text-gray-600 hover:text-gray-400'
-            }`}
+            className="flex-1 flex flex-col items-center justify-center py-3 relative"
           >
-            <Icon size={20} strokeWidth={active ? 2.5 : 1.8} />
-            <span className={`text-[10px] font-medium ${active ? 'text-blue-400' : 'text-gray-600'}`}>{label}</span>
+            {active && (
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 bg-accent rounded-full" />
+            )}
+            <span
+              className={`text-[11px] font-semibold tracking-wide transition-colors ${
+                active ? 'text-accent' : 'text-text-tertiary'
+              }`}
+            >
+              {label}
+            </span>
           </Link>
         )
       })}

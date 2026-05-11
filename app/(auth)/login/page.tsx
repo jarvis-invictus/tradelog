@@ -2,25 +2,27 @@ import PhoneOTPForm from '@/components/auth/PhoneOTPForm'
 
 export default function LoginPage() {
   return (
-    <main className="min-h-screen flex flex-col bg-gray-950">
-      {/* Top hero */}
-      <div className="flex-1 flex flex-col items-center justify-center px-6 pt-16 pb-8 text-center">
-        <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center mb-6 shadow-lg shadow-blue-900/40">
-          <span className="text-white font-black text-xl tracking-tight">TL</span>
+    <main className="min-h-screen flex flex-col bg-ink-bg">
+      {/* Top — wordmark + copy */}
+      <div className="flex-1 flex flex-col items-center justify-center px-8 pt-20 pb-10 text-center">
+        <div className="w-11 h-11 rounded-[14px] bg-accent flex items-center justify-center mb-7">
+          <span className="text-white font-black text-base tracking-tighter">TL</span>
         </div>
-        <h1 className="text-3xl font-bold text-white tracking-tight mb-2">TradeLog</h1>
-        <p className="text-gray-400 text-sm leading-relaxed max-w-[260px]">
+        <h1 className="text-[28px] font-bold text-text-primary tracking-tight leading-tight mb-3">
+          TradeLog
+        </h1>
+        <p className="text-text-secondary text-sm leading-relaxed max-w-[240px]">
           Your trades are already happening.<br />
           Now they&apos;ll start teaching you.
         </p>
       </div>
 
-      {/* Form card */}
-      <div className="bg-gray-900 rounded-t-3xl px-6 pt-8 pb-12 shadow-2xl">
-        <p className="text-white font-semibold text-base mb-6">Sign in with your phone</p>
+      {/* Bottom sheet */}
+      <div className="bg-ink-surface border-t border-ink-border rounded-t-[28px] px-6 pt-7 pb-10">
+        <p className="text-text-primary font-semibold text-[15px] mb-5">Enter your phone number</p>
         <PhoneOTPForm />
-        <p className="text-center text-gray-600 text-xs mt-6">
-          India only · +91 numbers only
+        <p className="text-center text-text-tertiary text-xs mt-7">
+          India only &middot; OTP via SMS
         </p>
       </div>
     </main>

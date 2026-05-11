@@ -79,9 +79,9 @@ export default function PhoneOTPForm() {
 
   if (step === 'phone') {
     return (
-      <form onSubmit={handleSendOtp} className="space-y-4 w-full">
-        <div className="flex rounded-xl overflow-hidden border border-gray-700 focus-within:border-blue-500 transition bg-gray-800">
-          <span className="flex items-center px-4 text-gray-400 font-medium text-sm border-r border-gray-700 select-none bg-gray-800">
+      <form onSubmit={handleSendOtp} className="space-y-3 w-full">
+        <div className="flex rounded-2xl overflow-hidden border border-ink-border bg-ink-muted focus-within:border-accent transition-colors">
+          <span className="flex items-center px-4 text-text-secondary text-[13px] font-semibold border-r border-ink-border select-none shrink-0">
             +91
           </span>
           <input
@@ -90,59 +90,55 @@ export default function PhoneOTPForm() {
             placeholder="98765 43210"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="flex-1 bg-transparent px-4 py-3.5 text-white text-base placeholder-gray-600 focus:outline-none"
+            className="flex-1 bg-transparent px-4 py-4 text-text-primary text-base placeholder-text-tertiary focus:outline-none num"
             autoFocus
           />
         </div>
         {error && (
-          <div className="flex items-center gap-2 bg-red-900/30 border border-red-800 rounded-lg px-3 py-2">
-            <span className="text-red-400 text-sm">{error}</span>
-          </div>
+          <p className="text-down text-[13px] px-1">{error}</p>
         )}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 text-white py-3.5 rounded-xl font-semibold text-base transition"
+          className="w-full bg-accent hover:bg-accent/90 active:scale-[0.98] disabled:opacity-40 text-white py-4 rounded-2xl font-semibold text-[15px] transition-all"
         >
-          {loading ? 'Sending code...' : 'Send OTP →'}
+          {loading ? 'Sending…' : 'Send code'}
         </button>
       </form>
     )
   }
 
   return (
-    <form onSubmit={handleVerifyOtp} className="space-y-4 w-full">
-      <div className="text-center mb-2">
-        <p className="text-gray-400 text-sm">Code sent to <span className="text-white font-medium">{fullPhone}</span></p>
-      </div>
+    <form onSubmit={handleVerifyOtp} className="space-y-3 w-full">
+      <p className="text-text-secondary text-[13px] mb-1">
+        Code sent to <span className="text-text-primary font-semibold">{fullPhone}</span>
+      </p>
       <input
         type="text"
         inputMode="numeric"
         maxLength={6}
-        placeholder="0  0  0  0  0  0"
+        placeholder="—  —  —  —  —  —"
         value={otp}
         onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-        className="w-full bg-gray-800 border border-gray-700 focus:border-blue-500 rounded-xl px-4 py-4 text-white text-center text-2xl font-bold tracking-[0.6em] placeholder-gray-700 focus:outline-none transition"
+        className="w-full bg-ink-muted border border-ink-border focus:border-accent rounded-2xl px-4 py-4 text-text-primary text-center text-[26px] font-bold tracking-[0.5em] placeholder-text-tertiary focus:outline-none transition-colors num"
         autoFocus
       />
       {error && (
-        <div className="flex items-center gap-2 bg-red-900/30 border border-red-800 rounded-lg px-3 py-2">
-          <span className="text-red-400 text-sm">{error}</span>
-        </div>
+        <p className="text-down text-[13px] px-1">{error}</p>
       )}
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 text-white py-3.5 rounded-xl font-semibold text-base transition"
+        className="w-full bg-accent hover:bg-accent/90 active:scale-[0.98] disabled:opacity-40 text-white py-4 rounded-2xl font-semibold text-[15px] transition-all"
       >
-        {loading ? 'Verifying...' : 'Verify →'}
+        {loading ? 'Verifying…' : 'Verify'}
       </button>
       <button
         type="button"
         onClick={() => { setStep('phone'); setOtp(''); setError(null) }}
-        className="w-full text-gray-500 hover:text-gray-300 text-sm py-1 transition"
+        className="w-full text-text-tertiary hover:text-text-secondary text-[13px] py-2 transition-colors"
       >
-        ← Change number
+        Use a different number
       </button>
     </form>
   )

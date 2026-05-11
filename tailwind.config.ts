@@ -10,19 +10,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          primary: '#6366F1',   // indigo-500 — main CTA, active states
-          accent: '#8B5CF6',    // violet-500 — highlights, badges
+        ink: {
+          bg:      '#0C0C0F',   // page background
+          surface: '#131318',   // card / sheet background
+          border:  '#1C1C24',   // card borders
+          muted:   '#2A2A36',   // input fills, dividers
         },
-        success: '#22C55E',     // green-500
-        danger: '#EF4444',      // red-500
-        warning: '#F59E0B',     // amber-500
-        surface: {
-          DEFAULT: '#111827',   // gray-900 — page bg
-          card: '#1F2937',      // gray-800 — card bg
-          elevated: '#374151',  // gray-700 — elevated elements
+        text: {
+          primary:   '#F4F4F5', // headings
+          secondary: '#71717A', // body / labels
+          tertiary:  '#3F3F46', // disabled / hints
         },
-        muted: '#6B7280',       // gray-500 — secondary text
+        accent: '#4C6EF5',      // primary CTA
+        up:     '#10B981',      // profit / positive
+        down:   '#F43F5E',      // loss / negative
+        warn:   '#F59E0B',      // warning
       },
       borderRadius: {
         card: '1rem',
