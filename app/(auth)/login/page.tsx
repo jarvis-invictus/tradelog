@@ -21,8 +21,8 @@ export default async function LoginPage({
       </div>
 
       {/* Form card */}
-      <div className="card p-6 lg:p-8">
-        <h2 className="text-text-primary font-bold text-[18px] tracking-tight mb-1">Sign in</h2>
+      <div className="card p-7 lg:p-8" style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.04), 0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(0,0,0,0.4)' }}>
+        <h2 className="text-text-primary font-bold text-[20px] tracking-tight mb-1">Sign in</h2>
         <p className="text-text-secondary text-[13px] mb-6">Enter your phone number to continue</p>
         {params.error && (
           <p className="text-down text-[12px] bg-down/10 border border-down/20 rounded-xl px-3 py-2 mb-4">
