@@ -17,7 +17,7 @@ function pnlColor(v: number | null) {
 }
 function fmtPnl(v: number | null) {
   if (v === null) return '—'
-  return `${v >= 0 ? '+' : ''}₹${Math.abs(v).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`
+  return `${v >= 0 ? '+' : '-'}$${Math.abs(v).toLocaleString('en-US', { maximumFractionDigits: 2 })}`
 }
 
 export default async function HomePage() {
@@ -71,7 +71,7 @@ export default async function HomePage() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {stats.map((s) => (
           <div key={s.label} className="card-hover p-4">
             <p className="text-text-tertiary text-[11px] font-medium uppercase tracking-wider mb-2">{s.label}</p>
@@ -81,9 +81,9 @@ export default async function HomePage() {
       </div>
 
       {/* Content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Recent trades */}
-        <div className="lg:col-span-2 card p-5">
+        <div className="md:col-span-2 card p-5">
           <div className="flex items-center justify-between mb-4">
             <p className="text-text-primary font-semibold text-[14px]">Recent trades</p>
             {trades.length > 0 && (

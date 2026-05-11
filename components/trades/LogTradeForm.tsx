@@ -1,10 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { fetchUsdInrRate } from '@/lib/exchangeRate'
-import { calculatePnLRupees } from '@/utils/pnlCalculator'
+import { calculatePnLUSD } from '@/utils/pnlCalculator'
 
 const PAIRS = ['XAUUSD', 'EURUSD', 'GBPUSD', 'USDJPY', 'GBPJPY', 'NIFTY', 'BANKNIFTY']
 const SESSIONS = ['Asian', 'London', 'New York', 'Overlap']
@@ -64,17 +63,14 @@ export default function LogTradeForm() {
   const [closeTime, setCloseTime] = useState(() => new Date().toISOString().slice(0, 16))
   const [emotion, setEmotion]     = useState('')
   const [reasoning, setReasoning] = useState('')
-  const [usdInr, setUsdInr]       = useState(84.5)
   const [saving, setSaving]       = useState(false)
   const [error, setError]         = useState<string | null>(null)
-
-  useEffect(() => { fetchUsdInrRate().then(setUsdInr) }, [])
 
   const pnl = useCallback(() => {
     const e = parseFloat(entry), x = parseFloat(exitPrice), l = parseFloat(lots)
     if (!e || !x || !l || status !== 'closed') return null
-    return calculatePnLRupees(l, e, x, pair, usdInr)
-  }, [entry, exitPrice, lots, pair, usdInr, status])()
+    return calculatePnLUSD(l, e, x, pair)
+  }, [entry, exitPrice, lots, pair, status])()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -122,7 +118,7 @@ export default function LogTradeForm() {
   }
 
   const pnlColor = pnl === null ? '' : pnl >= 0 ? 'text-up' : 'text-down'
-  const pnlFmt   = pnl === null ? null : `${pnl >= 0 ? '+' : ''}₹${Math.abs(pnl).toLocaleString('en-IN', { maximumFractionDigits: 0 })}`
+  const pnlFmt   = pnl === null ? null : `${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toLocaleString('en-US', { maximumFractionDigits: 2 })}`
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">

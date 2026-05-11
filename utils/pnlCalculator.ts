@@ -1,5 +1,5 @@
 // M5.1 — Pure P&L calculation functions (fully unit testable)
-// All values in Indian Rupees (₹)
+// All monetary values in USD ($)
 
 export function calculateLotSize(
   balance: number,
@@ -13,16 +13,26 @@ export function calculateLotSize(
   return parseFloat((riskAmount / (pipDiff * 100000)).toFixed(2))
 }
 
-export function calculatePnLRupees(
+export function calculatePnLUSD(
   lots: number,
   entry: number,
   exit: number,
-  _pair: string,
-  usdInr: number = 94.5
+  pair: string
 ): number {
-  const pipValue = lots * 10
-  const pips = (exit - entry) * 10000
-  return parseFloat((pips * pipValue * usdInr).toFixed(2))
+  const diff = exit - entry
+  if (pair.includes('XAU') || pair.includes('GOLD')) {
+    // XAUUSD: 1 lot = 100 oz
+    return parseFloat((diff * lots * 100).toFixed(2))
+  } else if (pair.includes('JPY')) {
+    // JPY pairs: pip = 0.01, pip value ~= $10/lot
+    return parseFloat((diff * 100 * lots * 10).toFixed(2))
+  } else if (pair === 'NIFTY' || pair === 'BANKNIFTY' || pair === 'SENSEX') {
+    // Indian indices — 1 lot = 1 unit for simplicity
+    return parseFloat((diff * lots).toFixed(2))
+  } else {
+    // Standard forex: 1 lot = 100,000 units, pip value = $10
+    return parseFloat((diff * 10000 * lots * 10).toFixed(2))
+  }
 }
 
 export function calculateRR(
@@ -34,8 +44,4 @@ export function calculateRR(
   const reward = Math.abs(tp - entry)
   if (risk === 0) return 0
   return parseFloat((reward / risk).toFixed(2))
-}
-
-export function usdToRupees(usd: number, rate: number = 94.5): number {
-  return parseFloat((usd * rate).toFixed(2))
 }

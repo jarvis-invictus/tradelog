@@ -15,7 +15,7 @@ const NAV = [
 export default function Sidebar() {
   const pathname = usePathname()
   return (
-    <aside className="hidden lg:flex flex-col fixed top-0 left-0 h-full w-56 bg-ink-surface border-r border-ink-border z-40" style={{boxShadow:'4px 0 24px rgba(0,0,0,0.4)'}}>
+    <aside className="hidden md:flex flex-col fixed top-0 left-0 h-full w-56 bg-ink-surface border-r border-ink-border z-40" style={{boxShadow:'4px 0 24px rgba(0,0,0,0.4)'}}>
       {/* Wordmark */}
       <div className="px-6 pt-7 pb-6 border-b border-ink-border">
         <div className="flex items-center gap-2.5">
