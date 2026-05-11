@@ -65,51 +65,56 @@ export default function RiskCalculator() {
   const fmt = (n: number) => n.toLocaleString('en-IN', { maximumFractionDigits: 0 })
 
   return (
-    <div className="flex flex-col gap-5 px-4 py-5">
-      {/* Inputs */}
-      <div className="grid grid-cols-2 gap-3">
-        <InputField label="Balance" value={balance} onChange={setBalance} prefix="₹" />
-        <InputField label="Risk %" value={riskPct} onChange={setRiskPct} prefix="%" placeholder="1" />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <InputField label="Entry" value={entry} onChange={setEntry} placeholder="2340.00" />
-        <InputField label="Stop Loss" value={sl} onChange={setSl} placeholder="2320.00" />
-      </div>
-      <InputField label="Take Profit (optional)" value={tp} onChange={setTp} placeholder="2380.00" />
-
-      {/* Results */}
-      {result ? (
-        <div className="bg-ink-surface border border-ink-border rounded-2xl overflow-hidden">
-          <div className="px-5 py-3.5 flex justify-between items-center border-b border-ink-border">
-            <span className="text-text-secondary text-[13px]">Lot size</span>
-            <span className="text-text-primary font-bold text-[18px] num">{result.lots}</span>
-          </div>
-          <div className="px-5 py-3.5 flex justify-between items-center border-b border-ink-border">
-            <span className="text-text-secondary text-[13px]">Max risk</span>
-            <span className="text-down font-semibold text-[14px] num">−₹{fmt(result.riskRupees)}</span>
-          </div>
-          {result.rewardRupees !== null && (
-            <div className="px-5 py-3.5 flex justify-between items-center border-b border-ink-border">
-              <span className="text-text-secondary text-[13px]">Potential reward</span>
-              <span className="text-up font-semibold text-[14px] num">+₹{fmt(result.rewardRupees)}</span>
-            </div>
-          )}
-          {result.rr !== null && (
-            <div className="px-5 py-3.5 flex justify-between items-center">
-              <span className="text-text-secondary text-[13px]">Risk : Reward</span>
-              <span className={`font-bold text-[18px] num ${result.rr >= 2 ? 'text-up' : result.rr >= 1 ? 'text-warn' : 'text-down'}`}>
-                1 : {result.rr}
-              </span>
-            </div>
-          )}
+    <div className="lg:grid lg:grid-cols-2 lg:gap-6 flex flex-col gap-5">
+      {/* Inputs column */}
+      <div className="flex flex-col gap-4 bg-ink-surface border border-ink-border rounded-2xl p-5">
+        <p className="text-text-primary font-semibold text-[14px]">Trade inputs</p>
+        <div className="grid grid-cols-2 gap-3">
+          <InputField label="Balance" value={balance} onChange={setBalance} prefix="₹" />
+          <InputField label="Risk %" value={riskPct} onChange={setRiskPct} prefix="%" placeholder="1" />
         </div>
-      ) : (
-        <div className="bg-ink-surface border border-ink-border rounded-2xl px-5 py-8 text-center">
-          <p className="text-text-tertiary text-[13px]">Enter entry &amp; stop loss to calculate</p>
+        <div className="grid grid-cols-2 gap-3">
+          <InputField label="Entry" value={entry} onChange={setEntry} placeholder="2340.00" />
+          <InputField label="Stop Loss" value={sl} onChange={setSl} placeholder="2320.00" />
         </div>
-      )}
+        <InputField label="Take Profit (optional)" value={tp} onChange={setTp} placeholder="2380.00" />
+        <p className="text-text-tertiary text-[11px] pt-1">{rateLabel} · Frankfurter API</p>
+      </div>
 
-      <p className="text-center text-text-tertiary text-[11px]">{rateLabel} · Frankfurter API</p>
+      {/* Results column */}
+      <div className="flex flex-col gap-3">
+        <p className="text-text-primary font-semibold text-[14px] hidden lg:block">Output</p>
+        {result ? (
+          <div className="bg-ink-surface border border-ink-border rounded-2xl overflow-hidden">
+            <div className="px-5 py-4 flex justify-between items-center border-b border-ink-border">
+              <span className="text-text-secondary text-[13px]">Lot size</span>
+              <span className="text-text-primary font-bold text-[22px] num">{result.lots}</span>
+            </div>
+            <div className="px-5 py-4 flex justify-between items-center border-b border-ink-border">
+              <span className="text-text-secondary text-[13px]">Max risk</span>
+              <span className="text-down font-semibold text-[15px] num">−₹{fmt(result.riskRupees)}</span>
+            </div>
+            {result.rewardRupees !== null && (
+              <div className="px-5 py-4 flex justify-between items-center border-b border-ink-border">
+                <span className="text-text-secondary text-[13px]">Potential reward</span>
+                <span className="text-up font-semibold text-[15px] num">+₹{fmt(result.rewardRupees)}</span>
+              </div>
+            )}
+            {result.rr !== null && (
+              <div className="px-5 py-4 flex justify-between items-center">
+                <span className="text-text-secondary text-[13px]">Risk : Reward</span>
+                <span className={`font-bold text-[22px] num ${result.rr >= 2 ? 'text-up' : result.rr >= 1 ? 'text-warn' : 'text-down'}`}>
+                  1 : {result.rr}
+                </span>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-ink-surface border border-ink-border rounded-2xl px-5 py-10 text-center flex-1 flex items-center justify-center">
+            <p className="text-text-tertiary text-[13px]">Enter entry &amp; stop loss to see results</p>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

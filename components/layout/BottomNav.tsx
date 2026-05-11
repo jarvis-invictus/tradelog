@@ -14,7 +14,7 @@ const NAV_ITEMS = [
 export default function BottomNav() {
   const pathname = usePathname()
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-ink-surface/95 backdrop-blur-md border-t border-ink-border flex pb-safe-bottom">
+    <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-50 bg-ink-surface/95 backdrop-blur-md border-t border-ink-border flex pb-safe-bottom">
       {NAV_ITEMS.map(({ href, label }) => {
         const active = pathname.startsWith(href)
         return (
