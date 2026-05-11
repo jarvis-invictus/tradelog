@@ -1,9 +1,8 @@
-// M2.3 — MT5 connect screen with skip (MetaApi deferred), routes to /rules-setup
-// TODO: Build in M2.3 milestone session
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { Link2, Shield, ArrowRight } from 'lucide-react'
 
 export default function MT5ConnectPage() {
   const [skipping, setSkipping] = useState(false)
@@ -15,32 +14,42 @@ export default function MT5ConnectPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col px-6 py-12">
+    <div className="flex-1 flex flex-col px-6 py-10 min-h-screen">
+      {/* Progress */}
       <div className="mb-8">
-        <p className="text-gray-500 text-sm mb-1">Step 2 of 3</p>
-        <h1 className="text-2xl font-bold text-white">Connect MT5 Account</h1>
-        <p className="text-gray-400 text-sm mt-1">
-          We use read-only investor access — we can see your trades but cannot place, modify, or close any trade.
-        </p>
+        <div className="flex gap-1.5 mb-5">
+          {[1,2,3].map((s) => (
+            <div key={s} className={`flex-1 h-1 rounded-full ${s <= 2 ? 'bg-blue-500' : 'bg-gray-800'}`} />
+          ))}
+        </div>
+        <p className="text-gray-500 text-xs mb-1">Step 2 of 3</p>
+        <h1 className="text-2xl font-bold text-white">Connect MT5</h1>
       </div>
 
-      <div className="flex-1 flex flex-col items-center justify-center gap-4 text-center">
-        <div className="w-14 h-14 rounded-full bg-gray-800 flex items-center justify-center text-2xl">🔗</div>
-        <p className="text-gray-300 font-medium">MetaApi integration</p>
-        <p className="text-gray-500 text-sm max-w-xs">
-          MT5 auto-sync requires MetaApi. This will be available in a future update.
-          <br /><br />
-          You can still use TradeLog to journal trades manually.
-        </p>
+      <div className="flex-1 flex flex-col items-center justify-center gap-5 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-gray-800 border border-gray-700 flex items-center justify-center">
+          <Link2 size={28} className="text-gray-400" />
+        </div>
+        <div>
+          <p className="text-white font-semibold text-lg mb-1">MT5 Auto-sync</p>
+          <p className="text-gray-500 text-sm max-w-xs leading-relaxed">
+            Auto-sync requires MetaApi integration — coming in a future update.
+            You can still log all your trades manually.
+          </p>
+        </div>
+        <div className="flex items-center gap-2 bg-green-900/20 border border-green-800/40 rounded-xl px-4 py-3">
+          <Shield size={14} className="text-green-400 shrink-0" />
+          <p className="text-green-400 text-xs text-left">Read-only access only — we can never place, modify, or close trades</p>
+        </div>
       </div>
 
       <div className="flex flex-col gap-3 w-full">
         <button
           onClick={handleSkip}
           disabled={skipping}
-          className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white py-3 rounded-md font-medium transition"
+          className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition"
         >
-          Continue without MT5
+          Continue without MT5 <ArrowRight size={16} />
         </button>
         <p className="text-center text-gray-600 text-xs">You can connect later from Settings</p>
       </div>

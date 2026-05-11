@@ -1,9 +1,8 @@
-// M2.4 — Rules setup screen
-// TODO: Build in M2.4 milestone session
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { AlertTriangle, TrendingDown } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 
 export default function RulesSetupPage() {
@@ -37,26 +36,40 @@ export default function RulesSetupPage() {
   }
 
   return (
-    <div className="flex-1 flex flex-col px-6 py-12">
+    <div className="flex-1 flex flex-col px-6 py-10 min-h-screen">
+      {/* Progress */}
       <div className="mb-8">
-        <p className="text-gray-500 text-sm mb-1">Step 3 of 3</p>
+        <div className="flex gap-1.5 mb-5">
+          {[1,2,3].map((s) => (
+            <div key={s} className="flex-1 h-1 rounded-full bg-blue-500" />
+          ))}
+        </div>
+        <p className="text-gray-500 text-xs mb-1">Step 3 of 3</p>
         <h1 className="text-2xl font-bold text-white">Set your rules</h1>
-        <p className="text-gray-400 text-sm mt-1">You can edit these anytime from the Rules tab</p>
+        <p className="text-gray-400 text-sm mt-1">Editable anytime from the Rules tab</p>
       </div>
 
-      <div className="flex flex-col gap-6 flex-1">
-        <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
-          <label className="block text-white font-medium mb-1">Max trades per day</label>
-          <p className="text-gray-500 text-xs mb-3">TradeLog will warn you when you approach this limit</p>
+      <div className="flex flex-col gap-4 flex-1">
+        {/* Max trades */}
+        <div className="bg-gray-900 rounded-2xl p-4 border border-gray-800">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 rounded-lg bg-orange-500/15 flex items-center justify-center">
+              <AlertTriangle size={15} className="text-orange-400" />
+            </div>
+            <div>
+              <p className="text-white text-sm font-semibold">Max trades per day</p>
+              <p className="text-gray-500 text-xs">Soft warning when you reach the limit</p>
+            </div>
+          </div>
           <div className="flex gap-2">
             {['2', '3', '4', '5'].map((v) => (
               <button
                 key={v}
                 onClick={() => setMaxTrades(v)}
-                className={`flex-1 py-2 rounded-md text-sm font-medium transition border ${
+                className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition border ${
                   maxTrades === v
                     ? 'bg-blue-600 border-blue-500 text-white'
-                    : 'bg-gray-800 border-gray-700 text-gray-300 hover:border-gray-500'
+                    : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600'
                 }`}
               >
                 {v}
@@ -65,16 +78,24 @@ export default function RulesSetupPage() {
           </div>
         </div>
 
-        <div className="bg-gray-900 rounded-xl p-4 border border-gray-800">
-          <label className="block text-white font-medium mb-1">Daily loss limit (₹)</label>
-          <p className="text-gray-500 text-xs mb-3">Hard stop — you will not be able to dismiss this alert</p>
-          <div className="flex items-center gap-2">
-            <span className="text-gray-400 text-lg">₹</span>
+        {/* Daily loss */}
+        <div className="bg-gray-900 rounded-2xl p-4 border border-gray-800">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="w-8 h-8 rounded-lg bg-red-500/15 flex items-center justify-center">
+              <TrendingDown size={15} className="text-red-400" />
+            </div>
+            <div>
+              <p className="text-white text-sm font-semibold">Daily loss limit</p>
+              <p className="text-gray-500 text-xs">Hard stop — cannot be dismissed</p>
+            </div>
+          </div>
+          <div className="flex items-center bg-gray-800 border border-gray-700 rounded-xl overflow-hidden focus-within:border-blue-500 transition">
+            <span className="px-4 text-gray-400 font-semibold border-r border-gray-700 py-3 text-sm">₹</span>
             <input
               type="number"
               value={dailyLoss}
               onChange={(e) => setDailyLoss(e.target.value)}
-              className="flex-1 bg-gray-800 border border-gray-700 rounded-md px-3 py-2 text-white text-lg focus:outline-none focus:border-blue-500"
+              className="flex-1 bg-transparent px-3 py-3 text-white text-base focus:outline-none"
               min="500"
               step="500"
             />
@@ -85,9 +106,9 @@ export default function RulesSetupPage() {
       <button
         onClick={handleContinue}
         disabled={loading}
-        className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white py-3 rounded-md font-medium transition mt-8"
+        className="w-full bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white py-3.5 rounded-xl font-semibold text-base transition mt-6"
       >
-        {loading ? 'Saving...' : 'Finish setup'}
+        {loading ? 'Saving...' : 'Finish Setup →'}
       </button>
     </div>
   )
