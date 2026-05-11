@@ -1,4 +1,5 @@
 import PhoneOTPForm from '@/components/auth/PhoneOTPForm'
+import GoogleSignInButton from '@/components/auth/GoogleSignInButton'
 
 export default function LoginPage() {
   return (
@@ -14,12 +15,23 @@ export default function LoginPage() {
         </p>
       </div>
 
-      {/* Form — shown on all sizes */}
+      {/* Form card */}
       <div className="card p-6 lg:p-8">
         <h2 className="text-text-primary font-bold text-[18px] tracking-tight mb-1">Sign in</h2>
         <p className="text-text-secondary text-[13px] mb-6">Enter your phone number to continue</p>
+
         <PhoneOTPForm />
-        <p className="text-center text-text-tertiary text-[11px] mt-6">India only &middot; OTP via SMS</p>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-5">
+          <div className="flex-1 h-px bg-ink-border" />
+          <span className="text-text-tertiary text-[11px] font-medium">or</span>
+          <div className="flex-1 h-px bg-ink-border" />
+        </div>
+
+        <GoogleSignInButton />
+
+        <p className="text-center text-text-tertiary text-[11px] mt-5">India only &middot; OTP via SMS or Google</p>
       </div>
     </div>
   )
