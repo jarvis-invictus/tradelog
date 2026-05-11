@@ -1,10 +1,10 @@
 // M0.3 — Browser-side Supabase client (singleton)
-// TODO: Build in M0.3 milestone session
-import { createBrowserClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
+import type { SupabaseClient } from '@supabase/supabase-js'
 import type { Database } from './types'
 
-export function createClient() {
-  return createBrowserClient<Database>(
+export function createClient(): SupabaseClient<Database> {
+  return createSupabaseClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
