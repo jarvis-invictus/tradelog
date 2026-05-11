@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import LogTradeForm from '@/components/trades/LogTradeForm'
 import Link from 'next/link'
 

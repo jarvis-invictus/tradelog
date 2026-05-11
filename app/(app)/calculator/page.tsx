@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic'
 import RiskCalculator from '@/components/calculator/RiskCalculator'
 
 export default function CalculatorPage() {

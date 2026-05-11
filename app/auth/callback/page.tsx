@@ -4,43 +4,44 @@ import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-async function handleUser(userId: string, router: ReturnType<typeof useRouter>) {
-  const supabase = createClient()
-  const { data: profile } = await supabase
-    .from('users')
-    .select('onboarding_complete')
-    .eq('id', userId)
-    .maybeSingle()
-
-  if (!profile) {
-    await supabase.from('users').insert({ id: userId })
-    router.replace('/welcome')
-  } else {
-    router.replace(profile.onboarding_complete ? '/home' : '/welcome')
-  }
-}
-
 export default function AuthCallbackPage() {
   const router = useRouter()
   const handled = useRef(false)
 
   useEffect(() => {
+    if (handled.current) return
     const supabase = createClient()
 
-    // Case 1: session already exists when page mounts (event already fired)
+    async function resolveRedirect(userId: string) {
+      const { data: profile } = await supabase
+        .from('users')
+        .select('onboarding_complete')
+        .eq('id', userId)
+        .maybeSingle()
+      if (!profile) {
+        await supabase.from('users').insert({ id: userId })
+        router.replace('/welcome')
+      } else {
+        router.replace(profile.onboarding_complete ? '/home' : '/welcome')
+      }
+    }
+
+    // Handle session that already exists on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user && !handled.current) {
         handled.current = true
-        handleUser(session.user.id, router)
+        resolveRedirect(session.user.id)
+        return
       }
     })
 
-    // Case 2: session arrives via onAuthStateChange (hash processed after mount)
+    // Handle session arriving via hash fragment (Google OAuth)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if ((event === 'SIGNED_IN' || event === 'INITIAL_SESSION') && session?.user && !handled.current) {
+        if (handled.current) return
+        if (event === 'SIGNED_IN' && session?.user) {
           handled.current = true
-          handleUser(session.user.id, router)
+          resolveRedirect(session.user.id)
         }
       }
     )
@@ -49,9 +50,9 @@ export default function AuthCallbackPage() {
   }, [router])
 
   return (
-    <div className="min-h-screen bg-ink-bg flex items-center justify-center">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-8 h-8 rounded-full border-2 border-accent border-t-transparent animate-spin" />
+    <div className="min-h-screen flex items-center justify-center bg-ink-bg">
+      <div className="text-center">
+        <div className="w-8 h-8 border-2 border-accent border-t-transparent rounded-full animate-spin mx-auto mb-3" />
         <p className="text-text-secondary text-[13px]">Signing you in…</p>
       </div>
     </div>
