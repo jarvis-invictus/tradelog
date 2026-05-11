@@ -18,7 +18,7 @@ export function calculatePnLRupees(
   entry: number,
   exit: number,
   _pair: string,
-  usdInr: number = 83.5
+  usdInr: number = 94.5
 ): number {
   const pipValue = lots * 10
   const pips = (exit - entry) * 10000
@@ -36,6 +36,6 @@ export function calculateRR(
   return parseFloat((reward / risk).toFixed(2))
 }
 
-export function usdToRupees(usd: number, rate: number = 83.5): number {
+export function usdToRupees(usd: number, rate: number = 94.5): number {
   return parseFloat((usd * rate).toFixed(2))
 }
