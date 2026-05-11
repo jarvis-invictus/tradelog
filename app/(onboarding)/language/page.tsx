@@ -46,11 +46,15 @@ export default function LanguagePage() {
           <button
             key={lang.code}
             onClick={() => setSelected(lang.code)}
-            className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl border transition-all ${
+            className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl border transition-all duration-150 ${
               selected === lang.code
-                ? 'border-accent/60 bg-accent/8'
+                ? 'border-accent/60'
                 : 'border-ink-border bg-ink-surface hover:border-ink-muted'
             }`}
+            style={selected === lang.code ? {
+              background: 'linear-gradient(135deg, rgba(76,110,245,0.10) 0%, rgba(76,110,245,0.04) 100%)',
+              boxShadow: '0 0 0 1px rgba(76,110,245,0.25), 0 2px 8px rgba(0,0,0,0.3)',
+            } : undefined}
           >
             <div className="text-left">
               <p className={`font-semibold text-[15px] ${selected === lang.code ? 'text-text-primary' : 'text-text-primary/80'}`}>
@@ -74,7 +78,7 @@ export default function LanguagePage() {
       <button
         onClick={handleContinue}
         disabled={loading}
-        className="w-full bg-accent hover:bg-accent/90 active:scale-[0.98] disabled:opacity-40 text-white py-4 rounded-2xl font-semibold text-[15px] transition-all mt-6"
+        className="w-full btn-primary py-4 text-[15px] mt-6"
       >
         {loading ? 'Saving…' : 'Continue'}
       </button>

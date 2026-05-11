@@ -2,14 +2,18 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   return (
     <div className="min-h-screen bg-ink-bg flex">
       {/* Left panel — hero, desktop only */}
-      <div className="hidden lg:flex flex-1 flex-col justify-between p-12 bg-ink-surface border-r border-ink-border">
-        <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-[8px] bg-accent flex items-center justify-center">
+      <div className="hidden lg:flex flex-1 flex-col justify-between p-12 border-r border-ink-border relative overflow-hidden"
+           style={{
+             background: 'linear-gradient(135deg, #0F0F14 0%, #131318 50%, #0C0C14 100%)',
+             backgroundImage: `linear-gradient(135deg, #0F0F14 0%, #131318 50%, #0C0C14 100%), radial-gradient(ellipse 60% 50% at 30% 20%, rgba(76,110,245,0.12) 0%, transparent 60%)`,
+           }}>
+        <div className="flex items-center gap-2.5 relative z-10">
+          <div className="w-7 h-7 rounded-[8px] bg-accent flex items-center justify-center" style={{boxShadow:'0 0 12px rgba(76,110,245,0.4)'}}>
             <span className="text-white text-[11px] font-black tracking-tighter">TL</span>
           </div>
           <span className="text-text-primary font-bold text-[15px]">TradeLog</span>
         </div>
-        <div>
+        <div className="relative z-10">
           <blockquote className="text-[28px] font-bold text-text-primary leading-snug tracking-tight max-w-sm">
             &ldquo;Your trades are already happening. Now they&apos;ll start teaching you.&rdquo;
           </blockquote>
@@ -29,7 +33,12 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             ))}
           </div>
         </div>
-        <p className="text-text-tertiary text-xs">TradeLog &copy; 2025</p>
+        {/* Subtle grid overlay */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          backgroundImage: 'linear-gradient(rgba(76,110,245,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(76,110,245,0.03) 1px, transparent 1px)',
+          backgroundSize: '48px 48px',
+        }} />
+        <p className="text-text-tertiary text-xs relative z-10">TradeLog &copy; 2025</p>
       </div>
 
       {/* Right panel — form */}

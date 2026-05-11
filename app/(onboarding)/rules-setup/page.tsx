@@ -48,7 +48,7 @@ export default function RulesSetupPage() {
       </div>
 
       <div className="flex flex-col gap-4 flex-1">
-        <div className="bg-ink-surface rounded-2xl p-5 border border-ink-border">
+        <div className="card p-5">
           <p className="text-text-primary text-[14px] font-semibold mb-0.5">Max trades per day</p>
           <p className="text-text-tertiary text-[12px] mb-4">Soft warning when you reach this</p>
           <div className="flex gap-2">
@@ -68,10 +68,10 @@ export default function RulesSetupPage() {
           </div>
         </div>
 
-        <div className="bg-ink-surface rounded-2xl p-5 border border-ink-border">
+        <div className="card p-5">
           <p className="text-text-primary text-[14px] font-semibold mb-0.5">Daily loss limit</p>
           <p className="text-text-tertiary text-[12px] mb-4">Hard stop — cannot be dismissed</p>
-          <div className="flex items-center bg-ink-muted border border-ink-border rounded-xl overflow-hidden focus-within:border-accent transition-colors">
+          <div className="flex items-center rounded-xl overflow-hidden input-field">
             <span className="px-4 text-text-secondary font-semibold border-r border-ink-border py-3.5 text-[13px] shrink-0">₹</span>
             <input
               type="number"
@@ -88,7 +88,7 @@ export default function RulesSetupPage() {
       <button
         onClick={handleContinue}
         disabled={loading}
-        className="w-full bg-accent hover:bg-accent/90 active:scale-[0.98] disabled:opacity-40 text-white py-4 rounded-2xl font-semibold text-[15px] transition-all mt-6"
+        className="w-full btn-primary py-4 text-[15px] mt-6"
       >
         {loading ? 'Saving…' : 'Finish setup'}
       </button>

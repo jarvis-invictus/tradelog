@@ -49,7 +49,7 @@ export default function MT5ConnectPage() {
         <button
           onClick={handleSkip}
           disabled={skipping}
-          className="w-full bg-accent hover:bg-accent/90 active:scale-[0.98] disabled:opacity-40 text-white py-4 rounded-2xl font-semibold text-[15px] transition-all"
+          className="w-full btn-primary py-4 text-[15px]"
         >
           Continue without MT5
         </button>

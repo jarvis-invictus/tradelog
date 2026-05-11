@@ -16,7 +16,7 @@ function InputField({
   return (
     <div>
       <p className="text-text-tertiary text-[11px] font-medium uppercase tracking-wider mb-1.5">{label}</p>
-      <div className="flex items-center bg-ink-muted border border-ink-border rounded-xl overflow-hidden focus-within:border-accent transition-colors">
+      <div className="flex items-center rounded-xl overflow-hidden input-field">
         {prefix && (
           <span className="px-3 text-text-secondary text-[13px] font-semibold border-r border-ink-border py-3 shrink-0 select-none">
             {prefix}
@@ -67,7 +67,7 @@ export default function RiskCalculator() {
   return (
     <div className="lg:grid lg:grid-cols-2 lg:gap-6 flex flex-col gap-5">
       {/* Inputs column */}
-      <div className="flex flex-col gap-4 bg-ink-surface border border-ink-border rounded-2xl p-5">
+      <div className="flex flex-col gap-4 card p-5">
         <p className="text-text-primary font-semibold text-[14px]">Trade inputs</p>
         <div className="grid grid-cols-2 gap-3">
           <InputField label="Balance" value={balance} onChange={setBalance} prefix="₹" />
@@ -85,7 +85,7 @@ export default function RiskCalculator() {
       <div className="flex flex-col gap-3">
         <p className="text-text-primary font-semibold text-[14px] hidden lg:block">Output</p>
         {result ? (
-          <div className="bg-ink-surface border border-ink-border rounded-2xl overflow-hidden">
+          <div className="card overflow-hidden">
             <div className="px-5 py-4 flex justify-between items-center border-b border-ink-border">
               <span className="text-text-secondary text-[13px]">Lot size</span>
               <span className="text-text-primary font-bold text-[22px] num">{result.lots}</span>
@@ -110,7 +110,7 @@ export default function RiskCalculator() {
             )}
           </div>
         ) : (
-          <div className="bg-ink-surface border border-ink-border rounded-2xl px-5 py-10 text-center flex-1 flex items-center justify-center">
+          <div className="card px-5 py-10 text-center flex-1 flex items-center justify-center">
             <p className="text-text-tertiary text-[13px]">Enter entry &amp; stop loss to see results</p>
           </div>
         )}

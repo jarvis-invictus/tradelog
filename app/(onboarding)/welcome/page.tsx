@@ -10,7 +10,7 @@ export default function WelcomePage() {
   return (
     <div className="flex-1 flex flex-col min-h-screen">
       <div className="flex-1 flex flex-col items-center justify-center px-8 pt-20 pb-10 text-center">
-        <div className="w-11 h-11 rounded-[14px] bg-accent flex items-center justify-center mb-7">
+        <div className="w-11 h-11 rounded-[14px] bg-accent flex items-center justify-center mb-7" style={{boxShadow:'0 0 24px rgba(76,110,245,0.4)'}}>
           <span className="text-white font-black text-base tracking-tighter">TL</span>
         </div>
         <h1 className="text-[28px] font-bold text-text-primary tracking-tight leading-tight mb-3">
@@ -21,7 +21,7 @@ export default function WelcomePage() {
         </p>
       </div>
 
-      <div className="bg-ink-surface border-t border-ink-border rounded-t-[28px] px-6 pt-7 pb-10">
+      <div className="bg-ink-surface border-t border-ink-border rounded-t-[28px] px-6 pt-7 pb-10" style={{boxShadow:'0 -4px 32px rgba(0,0,0,0.4)'}}>
         <div className="flex flex-col gap-5 mb-8">
           {FEATURES.map(({ dot, label, desc }) => (
             <div key={label} className="flex items-start gap-4">
@@ -35,7 +35,7 @@ export default function WelcomePage() {
         </div>
         <Link
           href="/language"
-          className="block w-full bg-accent hover:bg-accent/90 active:scale-[0.98] text-white text-center py-4 rounded-2xl font-semibold text-[15px] transition-all"
+          className="block w-full btn-primary py-4 text-[15px] text-center"
         >
           Get Started
         </Link>

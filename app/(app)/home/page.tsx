@@ -16,23 +16,23 @@ export default function HomePage() {
           { label: 'Trades today',   value: '—',   color: 'text-text-primary' },
           { label: 'Current streak', value: '—',   color: 'text-text-primary' },
         ].map((s) => (
-          <div key={s.label} className="bg-ink-surface border border-ink-border rounded-2xl p-4">
+          <div key={s.label} className="card-hover p-4">
             <p className="text-text-tertiary text-[11px] font-medium uppercase tracking-wider mb-2">{s.label}</p>
-            <p className={`text-[24px] font-bold num ${s.color}`}>{s.value}</p>
+            <p className="stat-value">{s.value}</p>
           </div>
         ))}
       </div>
 
       {/* Two-column on desktop: recent trades + quick actions */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 bg-ink-surface border border-ink-border rounded-2xl p-5">
+        <div className="lg:col-span-2 card p-5">
           <p className="text-text-primary font-semibold text-[14px] mb-4">Recent trades</p>
           <div className="flex flex-col items-center justify-center py-10">
             <p className="text-text-tertiary text-[13px]">No trades yet</p>
             <p className="text-text-tertiary text-[12px] mt-1">Connect MT5 or log a trade manually</p>
           </div>
         </div>
-        <div className="bg-ink-surface border border-ink-border rounded-2xl p-5">
+        <div className="card p-5">
           <p className="text-text-primary font-semibold text-[14px] mb-4">Quick actions</p>
           <div className="flex flex-col gap-2">
             {['Log a trade', 'Open calculator', 'View rules'].map((a) => (

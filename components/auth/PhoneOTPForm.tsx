@@ -80,7 +80,7 @@ export default function PhoneOTPForm() {
   if (step === 'phone') {
     return (
       <form onSubmit={handleSendOtp} className="space-y-3 w-full">
-        <div className="flex rounded-2xl overflow-hidden border border-ink-border bg-ink-muted focus-within:border-accent transition-colors">
+        <div className="flex rounded-2xl overflow-hidden input-field">
           <span className="flex items-center px-4 text-text-secondary text-[13px] font-semibold border-r border-ink-border select-none shrink-0">
             +91
           </span>
@@ -90,7 +90,7 @@ export default function PhoneOTPForm() {
             placeholder="98765 43210"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="flex-1 bg-transparent px-4 py-4 text-text-primary text-base placeholder-text-tertiary focus:outline-none num"
+            className="flex-1 bg-transparent px-4 py-4 text-text-primary text-base focus:outline-none num"
             autoFocus
           />
         </div>
@@ -100,7 +100,7 @@ export default function PhoneOTPForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-accent hover:bg-accent/90 active:scale-[0.98] disabled:opacity-40 text-white py-4 rounded-2xl font-semibold text-[15px] transition-all"
+          className="w-full btn-primary py-4 text-[15px]"
         >
           {loading ? 'Sending…' : 'Send code'}
         </button>
@@ -120,7 +120,7 @@ export default function PhoneOTPForm() {
         placeholder="—  —  —  —  —  —"
         value={otp}
         onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-        className="w-full bg-ink-muted border border-ink-border focus:border-accent rounded-2xl px-4 py-4 text-text-primary text-center text-[26px] font-bold tracking-[0.5em] placeholder-text-tertiary focus:outline-none transition-colors num"
+        className="w-full input-field px-4 py-4 text-center text-[26px] font-bold tracking-[0.5em] num"
         autoFocus
       />
       {error && (
@@ -129,14 +129,14 @@ export default function PhoneOTPForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-accent hover:bg-accent/90 active:scale-[0.98] disabled:opacity-40 text-white py-4 rounded-2xl font-semibold text-[15px] transition-all"
+        className="w-full btn-primary py-4 text-[15px]"
       >
         {loading ? 'Verifying…' : 'Verify'}
       </button>
       <button
         type="button"
         onClick={() => { setStep('phone'); setOtp(''); setError(null) }}
-        className="w-full text-text-tertiary hover:text-text-secondary text-[13px] py-2 transition-colors"
+        className="w-full input-field text-text-tertiary hover:text-text-secondary text-[13px] py-2 transition-colors"
       >
         Use a different number
       </button>
