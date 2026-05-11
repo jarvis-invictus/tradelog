@@ -9,10 +9,11 @@ export default function GoogleSignInButton() {
 
   async function handleGoogleSignIn() {
     setLoading(true)
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${siteUrl}/auth/callback`,
       },
     })
     // No need to setLoading(false) — page will redirect

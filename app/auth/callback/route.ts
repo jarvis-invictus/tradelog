@@ -8,28 +8,31 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createServerClient()
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      // Ensure public.users row exists for new OAuth users
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('onboarding_complete')
-          .eq('id', user.id)
-          .maybeSingle()
+    const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code)
+    if (exchangeError) {
+      console.error('[auth/callback] exchangeCodeForSession error:', exchangeError.message)
+      return NextResponse.redirect(`${origin}/login?error=${encodeURIComponent(exchangeError.message)}`)
+    }
 
-        if (!profile) {
-          await supabase.from('users').insert({ id: user.id })
-          return NextResponse.redirect(`${origin}/welcome`)
-        }
+    const { data: { user } } = await supabase.auth.getUser()
+    if (user) {
+      const { data: profile } = await supabase
+        .from('users')
+        .select('onboarding_complete')
+        .eq('id', user.id)
+        .maybeSingle()
 
-        return NextResponse.redirect(
-          `${origin}${profile.onboarding_complete ? next : '/welcome'}`
-        )
+      if (!profile) {
+        await supabase.from('users').insert({ id: user.id })
+        return NextResponse.redirect(`${origin}/welcome`)
       }
+
+      return NextResponse.redirect(
+        `${origin}${profile.onboarding_complete ? next : '/welcome'}`
+      )
     }
   }
 
+  console.error('[auth/callback] No code in request or user not found')
   return NextResponse.redirect(`${origin}/login?error=oauth_failed`)
 }

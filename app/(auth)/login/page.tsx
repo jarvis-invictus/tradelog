@@ -1,7 +1,11 @@
 import PhoneOTPForm from '@/components/auth/PhoneOTPForm'
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton'
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { error?: string }
+}) {
   return (
     <div className="w-full">
       {/* Mobile: show logo + tagline above form */}
@@ -19,6 +23,11 @@ export default function LoginPage() {
       <div className="card p-6 lg:p-8">
         <h2 className="text-text-primary font-bold text-[18px] tracking-tight mb-1">Sign in</h2>
         <p className="text-text-secondary text-[13px] mb-6">Enter your phone number to continue</p>
+        {searchParams.error && (
+          <p className="text-down text-[12px] bg-down/10 border border-down/20 rounded-xl px-3 py-2 mb-4">
+            {decodeURIComponent(searchParams.error)}
+          </p>
+        )}
 
         <PhoneOTPForm />
 

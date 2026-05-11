@@ -27,16 +27,16 @@ export async function proxy(request: NextRequest) {
   const { data: { session } } = await supabase.auth.getSession()
   const { pathname } = request.nextUrl
 
-  const publicPaths = ['/login']
+  const publicPaths = ['/login', '/auth']
   const onboardingPaths = ['/welcome', '/language', '/mt5-connect', '/rules-setup', '/complete']
   const isPublicPath = publicPaths.some(p => pathname.startsWith(p))
   const isOnboardingPath = onboardingPaths.some(p => pathname.startsWith(p))
 
-  if (!session && !isPublicPath) {
+  if (!session && !isPublicPath && !isOnboardingPath) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  if (session && isPublicPath) {
+  if (session && pathname === '/login') {
     return NextResponse.redirect(new URL('/home', request.url))
   }
 
