@@ -25,7 +25,7 @@ type Journal = {
 
 type Feedback = {
   feedback_text: string
-  created_at: string
+  generated_at: string
 } | null
 
 function pnlColorClass(v: number | null) {
@@ -71,7 +71,7 @@ export default function FeedbackClient({
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Failed to generate feedback')
-      setFeedback({ feedback_text: data.feedback, created_at: new Date().toISOString() })
+      setFeedback({ feedback_text: data.feedback, generated_at: new Date().toISOString() })
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Something went wrong')
     }
@@ -125,7 +125,7 @@ export default function FeedbackClient({
               <Sparkles className="w-3.5 h-3.5 text-brand-400" />
               <p className="text-ink-primary font-semibold text-sm">AI Feedback</p>
             </div>
-            <p className="text-ink-tertiary text-xs">{fmtDate(feedback.created_at)}</p>
+            <p className="text-ink-tertiary text-xs">{fmtDate(feedback.generated_at)}</p>
           </div>
           <div className="px-4 py-4">
             <pre className="text-ink-secondary text-sm leading-relaxed whitespace-pre-wrap font-sans">

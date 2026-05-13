@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
       user_id:       user.id,
       feedback_text: feedback,
       language:      profileRes.data?.language ?? 'en',
-      created_at:    new Date().toISOString(),
+      generated_at:  new Date().toISOString(),
     }, { onConflict: 'trade_id' })
 
     return Response.json({ feedback })

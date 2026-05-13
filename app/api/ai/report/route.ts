@@ -32,10 +32,10 @@ async function generateForUser(supabaseAdmin: SupabaseClient<any>, userId: strin
 
   const weekStart = weekAgo.slice(0, 10)
   await supabaseAdmin.from('weekly_reports').upsert({
-    user_id:     userId,
-    report_text: reportText,
-    week_start:  weekStart,
-    created_at:  new Date().toISOString(),
+    user_id:      userId,
+    report_text:  reportText,
+    week_start:   weekStart,
+    generated_at: new Date().toISOString(),
   }, { onConflict: 'user_id,week_start' })
 
   return reportText

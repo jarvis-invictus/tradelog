@@ -5,7 +5,7 @@ type Report = {
   user_id?: string
   report_text?: string
   week_start?: string
-  created_at?: string
+  generated_at?: string
   [key: string]: unknown
 }
 
@@ -56,8 +56,8 @@ export default function ReportClient({
       <div className="card overflow-hidden">
         <div className="px-4 py-3 border-b border-surface-300 flex items-center justify-between">
           <p className="text-ink-primary font-semibold text-sm">Latest report</p>
-          {latest.created_at && (
-            <p className="text-ink-tertiary text-xs">{fmtDate(latest.created_at as string)}</p>
+          {latest.generated_at && (
+            <p className="text-ink-tertiary text-xs">{fmtDate(latest.generated_at as string)}</p>
           )}
         </div>
         <div className="px-4 py-4 prose prose-invert prose-sm max-w-none">
@@ -75,7 +75,7 @@ export default function ReportClient({
             <details key={i} className="card overflow-hidden group">
               <summary className="px-4 py-3 flex items-center justify-between cursor-pointer list-none">
                 <span className="text-ink-primary text-sm font-medium">
-                  Week of {r.week_start ? fmtDate(r.week_start as string) : fmtDate(r.created_at as string)}
+                  Week of {r.week_start ? fmtDate(r.week_start as string) : fmtDate((r.generated_at ?? '') as string)}
                 </span>
                 <span className="text-ink-tertiary text-xs group-open:hidden">Show</span>
                 <span className="text-ink-tertiary text-xs hidden group-open:block">Hide</span>

@@ -127,11 +127,19 @@ export default function TradeDetailClient({
           trade_id:           trade.id,
           user_id:            user.id,
           reasoning_added_at: new Date().toISOString(),
+          streak_counted:     true,
         })
         .select()
         .single()
       if (data) setJournal(data as unknown as Journal)
     }
+
+    // Ensure streak is counted whenever a journal is saved/updated
+    await supabase
+      .from('trade_journals')
+      .update({ streak_counted: true })
+      .eq('trade_id', trade.id)
+      .eq('user_id', user.id)
 
     setSaving(false)
     setEditingJournal(false)

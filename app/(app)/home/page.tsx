@@ -1,6 +1,9 @@
 export const dynamic = 'force-dynamic'
 import { createServerClient } from '@/lib/supabase/server'
 import Link from 'next/link'
+import AlertBanner from '@/components/rules/AlertBanner'
+import TodayPnL from '@/components/dashboard/TodayPnL'
+import StreakBadge from '@/components/dashboard/StreakBadge'
 
 type Trade = {
   id: string
@@ -54,6 +57,8 @@ export default async function HomePage() {
   return (
     <div className="space-y-4 md:space-y-6">
 
+      <AlertBanner />
+
       {/* Page header */}
       <div className="flex items-center justify-between">
         <div>
@@ -70,13 +75,8 @@ export default async function HomePage() {
 
       {/* Stat cards — 2 cols on mobile, 4 cols on desktop */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {/* Today P&L — hero */}
-        <div className="card p-4 flex flex-col gap-1">
-          <span className="section-label">Today&apos;s P&L</span>
-          <span className={`stat-value num ${closedToday.length > 0 ? pnlColorClass(todayPnl) : 'text-ink-primary'}`}>
-            {closedToday.length > 0 ? fmtPnl(todayPnl) : '—'}
-          </span>
-        </div>
+        {/* Today P&L — live client component */}
+        <TodayPnL />
 
         <div className="card p-4 flex flex-col gap-1">
           <span className="section-label">Win rate</span>
@@ -171,6 +171,8 @@ export default async function HomePage() {
               ))}
             </div>
           </div>
+
+          <StreakBadge />
 
           {/* Week summary mini card */}
           <div className="card p-4">

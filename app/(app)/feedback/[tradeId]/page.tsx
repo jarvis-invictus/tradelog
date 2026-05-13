@@ -23,7 +23,7 @@ export default async function FeedbackPage({ params }: { params: { tradeId: stri
       .maybeSingle(),
     supabase
       .from('ai_feedback')
-      .select('feedback_text, created_at')
+      .select('feedback_text, generated_at')
       .eq('trade_id', params.tradeId)
       .eq('user_id', user?.id ?? '')
       .maybeSingle(),
@@ -45,7 +45,7 @@ export default async function FeedbackPage({ params }: { params: { tradeId: stri
         journal={journalRes.data ?? null}
         existingFeedback={feedbackRes.data ? {
           feedback_text: feedbackRes.data.feedback_text as string,
-          created_at:    feedbackRes.data.created_at as string,
+          generated_at:  feedbackRes.data.generated_at as string,
         } : null}
         aiEnabled={!!process.env.ANTHROPIC_API_KEY}
       />

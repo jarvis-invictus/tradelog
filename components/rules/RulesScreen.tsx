@@ -17,9 +17,10 @@ type Rule = {
 }
 
 const RULE_TYPES = [
-  { key: 'max_trades_day',  label: 'Max trades per day',     placeholder: '3', unit: 'trades' },
-  { key: 'daily_loss_pct',  label: 'Daily loss limit',       placeholder: '2', unit: '% of balance' },
-  { key: 'no_trade_after',  label: 'No trading after hour',  placeholder: '17', unit: ':00 (24h)' },
+  { key: 'max_trades_day',  label: 'Max trades per day',     placeholder: '3',   unit: 'trades' },
+  { key: 'daily_loss_pct',  label: 'Daily loss % of balance',placeholder: '2',   unit: '% of balance' },
+  { key: 'loss_limit',      label: 'Loss limit (₹)',         placeholder: '2000',unit: '₹' },
+  { key: 'no_trade_after',  label: 'No trading after hour',  placeholder: '17',  unit: ':00 (24h)' },
   { key: 'pair_ban',        label: 'Banned pair',            placeholder: 'e.g. GBPJPY', unit: '' },
   { key: 'min_rr',          label: 'Minimum R:R ratio',      placeholder: '1.5', unit: ':1 R:R' },
 ]
@@ -37,9 +38,19 @@ export default function RulesScreen({ rules: initialRules, userId }: { rules: Ru
   async function addRule() {
     if (!name.trim()) return
     setSaving(true)
+    const numValue = value ? parseFloat(value) : null
     const { data, error } = await supabase
       .from('user_rules')
-      .insert({ user_id: userId, name, type, value: value ? parseFloat(value) : null, note: note || null, active: true })
+      .insert({
+        user_id:      userId,
+        name,
+        type,
+        value:        numValue,
+        note:         note || null,
+        active:       true,
+        definition:   numValue != null ? { value: numValue } : {},
+        personal_note: note || null,
+      })
       .select()
       .single()
     if (!error && data) {

@@ -4,6 +4,9 @@ import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { calculatePnLINR } from '@/utils/pnlCalculator'
+import VoiceInput from '@/components/journal/VoiceInput'
+
+const WHISPER_ENABLED = process.env.NEXT_PUBLIC_WHISPER_ENABLED === 'true'
 
 const PAIRS = ['XAUUSD', 'EURUSD', 'GBPUSD', 'USDJPY', 'GBPJPY', 'NIFTY', 'BANKNIFTY']
 const SESSIONS = ['Asian', 'London', 'New York', 'Overlap']
@@ -94,6 +97,42 @@ export default function LogTradeForm() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { setError('Not authenticated'); setSaving(false); return }
 
+    // Rule hard-stop check before saving
+    const todayStart = new Date().toISOString().slice(0, 10) + 'T00:00:00Z'
+    const [rulesRes, todayTradesRes] = await Promise.all([
+      supabase.from('user_rules').select('id, type, value, name').eq('user_id', user.id).eq('active', true),
+      supabase.from('trades').select('id, pnl_rupees, status').eq('user_id', user.id).gte('created_at', todayStart),
+    ])
+    const activeRules = rulesRes.data ?? []
+    const todayTrades = todayTradesRes.data ?? []
+    const todayLoss = todayTrades.reduce((s, t) => s + Math.min((t.pnl_rupees as number) ?? 0, 0), 0)
+
+    for (const rule of activeRules) {
+      const val = (rule.value as number) ?? 999999
+      let blocked = false
+      let msg = ''
+      if (rule.type === 'max_trades_day' && todayTrades.length >= val) {
+        blocked = true
+        msg = `Rule blocked: "${rule.name}" — max ${val} trade${val !== 1 ? 's' : ''} per day reached.`
+      }
+      if ((rule.type === 'loss_limit' || rule.type === 'daily_loss_limit') && Math.abs(todayLoss) >= val) {
+        blocked = true
+        msg = `Rule blocked: "${rule.name}" — daily loss limit of ₹${val.toLocaleString('en-IN')} reached.`
+      }
+      if (blocked) {
+        await supabase.from('rule_breaks').insert({
+          rule_id:    rule.id,
+          user_id:    user.id,
+          trade_id:   null,
+          cost_rupees: null,
+          broken_at:  new Date().toISOString(),
+        })
+        setError(msg)
+        setSaving(false)
+        return
+      }
+    }
+
     const { data: trade, error: tradeErr } = await supabase
       .from('trades')
       .insert({
@@ -124,6 +163,7 @@ export default function LogTradeForm() {
         entry_emotion:      emotion || null,
         reasoning_text:     reasoning || null,
         reasoning_added_at: new Date().toISOString(),
+        streak_counted:     true,
       })
     }
 
@@ -261,7 +301,12 @@ export default function LogTradeForm() {
         </div>
 
         <div>
-          <FieldLabel>Reasoning / notes</FieldLabel>
+          <div className="flex items-center justify-between mb-1.5">
+            <FieldLabel>Reasoning / notes</FieldLabel>
+            {WHISPER_ENABLED && (
+              <VoiceInput onTranscript={(t) => setReasoning((prev) => prev ? prev + ' ' + t : t)} />
+            )}
+          </div>
           <textarea
             value={reasoning} onChange={(e) => setReasoning(e.target.value)}
             rows={3} placeholder="Why did you take this trade?"
