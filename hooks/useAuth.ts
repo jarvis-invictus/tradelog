@@ -1,7 +1,41 @@
 // M1.2 — Auth state hook
 // Subscribes to supabase.auth.onAuthStateChange
 // Exposes: user, session, loading, signOut()
-// TODO: Build in M1.2 milestone session
+import { useEffect, useState } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import type { User, Session } from '@supabase/supabase-js'
+
 export function useAuth() {
-  return { user: null, session: null, loading: true, signOut: async () => {} }
+  const [user, setUser] = useState<User | null>(null)
+  const [session, setSession] = useState<Session | null>(null)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const supabase = createClient()
+
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+      setUser(session?.user ?? null)
+      setLoading(false)
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const signOut = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+  }
+
+  return { user, session, loading, signOut }
 }
