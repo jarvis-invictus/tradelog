@@ -4,17 +4,15 @@ import Link from 'next/link'
 
 export default function NewTradePage() {
   return (
-    <div className="py-6 lg:py-10">
-      <div className="flex items-center gap-3 mb-6">
+    <div className="space-y-4 md:space-y-6">
+      <div className="flex items-center gap-3">
         <Link href="/home"
-          className="text-text-tertiary hover:text-text-secondary text-[13px] transition-colors"
+          className="text-ink-tertiary hover:text-ink-secondary text-sm transition-colors duration-150"
         >
           ← Back
         </Link>
-        <span className="text-ink-border">|</span>
-        <div>
-          <h1 className="text-[22px] font-bold text-text-primary tracking-tight leading-none">Log a trade</h1>
-        </div>
+        <span className="text-surface-300">|</span>
+        <h1 className="text-xl font-bold text-ink-primary tracking-tight">Log a trade</h1>
       </div>
       <div className="max-w-2xl">
         <LogTradeForm />

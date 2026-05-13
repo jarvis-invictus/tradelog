@@ -14,15 +14,15 @@ type Direction = 'buy' | 'sell'
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="card p-5 flex flex-col gap-4">
-      <p className="text-text-tertiary text-[11px] font-semibold uppercase tracking-widest">{title}</p>
+    <div className="card p-4 md:p-5 flex flex-col gap-4">
+      <p className="section-label">{title}</p>
       {children}
     </div>
   )
 }
 
-function Label({ children }: { children: React.ReactNode }) {
-  return <p className="text-text-secondary text-[12px] font-medium mb-1.5">{children}</p>
+function FieldLabel({ children }: { children: React.ReactNode }) {
+  return <p className="text-ink-secondary text-xs font-medium mb-1.5">{children}</p>
 }
 
 function NumInput({
@@ -32,14 +32,18 @@ function NumInput({
 }) {
   return (
     <div>
-      <Label>{label}</Label>
-      <div className="flex items-center rounded-xl overflow-hidden input-field">
-        {prefix && <span className="px-3 text-text-secondary text-[13px] font-semibold border-r border-ink-border py-3 shrink-0 select-none">{prefix}</span>}
+      <FieldLabel>{label}</FieldLabel>
+      <div className="flex items-center rounded-[4px] overflow-hidden bg-surface-600 border border-surface-300 focus-within:border-brand-400 transition-colors duration-150">
+        {prefix && (
+          <span className="px-3 text-ink-secondary text-sm font-semibold border-r border-surface-300 py-3 shrink-0 select-none">
+            {prefix}
+          </span>
+        )}
         <input
           type="number" inputMode="decimal"
           value={value} onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="flex-1 bg-transparent px-3 py-3 text-text-primary text-[14px] placeholder-text-tertiary focus:outline-none num"
+          className="flex-1 bg-transparent px-3 py-3 text-ink-primary text-sm placeholder:text-ink-tertiary focus:outline-none num"
         />
       </div>
     </div>
@@ -88,8 +92,8 @@ export default function LogTradeForm() {
         pair,
         direction,
         entry_price: parseFloat(entry),
-        sl_price:    sl    ? parseFloat(sl)        : null,
-        tp_price:    tp    ? parseFloat(tp)        : null,
+        sl_price:    sl ? parseFloat(sl) : null,
+        tp_price:    tp ? parseFloat(tp) : null,
         lot_size:    parseFloat(lots),
         session,
         open_time:   new Date(openTime).toISOString(),
@@ -106,10 +110,10 @@ export default function LogTradeForm() {
 
     if (emotion || reasoning) {
       await supabase.from('trade_journals').insert({
-        trade_id:       trade.id,
-        user_id:        user.id,
-        entry_emotion:  emotion  || null,
-        reasoning_text: reasoning || null,
+        trade_id:           trade.id,
+        user_id:            user.id,
+        entry_emotion:      emotion || null,
+        reasoning_text:     reasoning || null,
         reasoning_added_at: new Date().toISOString(),
       })
     }
@@ -117,39 +121,38 @@ export default function LogTradeForm() {
     router.push('/home')
   }
 
-  const pnlColor = pnl === null ? '' : pnl >= 0 ? 'text-up' : 'text-down'
-  const pnlFmt   = pnl === null ? null : `${pnl >= 0 ? '+' : '-'}$${Math.abs(pnl).toLocaleString('en-US', { maximumFractionDigits: 2 })}`
+  const pnlColorClass = pnl === null ? '' : pnl >= 0 ? 'text-profit-text' : 'text-loss-text'
+  const pnlFmt = pnl === null ? null : `${pnl >= 0 ? '+' : ''}₹${Math.abs(pnl).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-      {/* Pair + Direction */}
+      {/* Trade details */}
       <Section title="Trade">
         <div>
-          <Label>Instrument</Label>
+          <FieldLabel>Instrument</FieldLabel>
           <div className="flex gap-2 overflow-x-auto pb-1 -mx-1 px-1">
             {PAIRS.map((p) => (
               <button key={p} type="button" onClick={() => setPair(p)}
-                className={`shrink-0 px-3 py-2 rounded-xl text-[13px] font-semibold border transition-all duration-150 ${
+                className={`shrink-0 px-3 py-2 rounded-[4px] text-sm font-semibold border transition-all duration-150 ${
                   pair === p
-                    ? 'border-accent/60 text-accent'
-                    : 'border-ink-border bg-ink-muted text-text-secondary hover:border-ink-muted'
+                    ? 'border-brand-400/60 text-brand-400 bg-brand-400/10'
+                    : 'border-surface-300 bg-surface-600 text-ink-secondary hover:bg-surface-500'
                 }`}
-                style={pair === p ? { background: 'linear-gradient(135deg, rgba(76,110,245,0.12) 0%, rgba(76,110,245,0.04) 100%)' } : undefined}
               >{p}</button>
             ))}
           </div>
         </div>
 
         <div>
-          <Label>Direction</Label>
+          <FieldLabel>Direction</FieldLabel>
           <div className="grid grid-cols-2 gap-2">
             {(['buy', 'sell'] as Direction[]).map((d) => (
               <button key={d} type="button" onClick={() => setDirection(d)}
-                className={`py-3 rounded-xl text-[14px] font-bold uppercase tracking-wide border transition-all duration-150 ${
-                  direction === d && d === 'buy'  ? 'bg-up/15 border-up/40 text-up' :
-                  direction === d && d === 'sell' ? 'bg-down/15 border-down/40 text-down' :
-                  'border-ink-border bg-ink-muted text-text-tertiary hover:border-ink-muted'
+                className={`py-3 rounded-[4px] text-sm font-bold uppercase tracking-wide border transition-all duration-150 ${
+                  direction === d && d === 'buy'  ? 'bg-profit/15 border-profit/40 text-profit-text' :
+                  direction === d && d === 'sell' ? 'bg-loss/15 border-loss/40 text-loss-text' :
+                  'border-surface-300 bg-surface-600 text-ink-tertiary hover:bg-surface-500'
                 }`}
               >{d}</button>
             ))}
@@ -157,53 +160,52 @@ export default function LogTradeForm() {
         </div>
 
         <div>
-          <Label>Session</Label>
+          <FieldLabel>Session</FieldLabel>
           <div className="flex gap-2 overflow-x-auto pb-1">
             {SESSIONS.map((s) => (
               <button key={s} type="button" onClick={() => setSession(s)}
-                className={`shrink-0 px-3 py-2 rounded-xl text-[13px] font-semibold border transition-all duration-150 ${
+                className={`shrink-0 px-3 py-2 rounded-[4px] text-sm font-semibold border transition-all duration-150 ${
                   session === s
-                    ? 'border-accent/60 text-accent'
-                    : 'border-ink-border bg-ink-muted text-text-secondary'
+                    ? 'border-brand-400/60 text-brand-400 bg-brand-400/10'
+                    : 'border-surface-300 bg-surface-600 text-ink-secondary hover:bg-surface-500'
                 }`}
-                style={session === s ? { background: 'linear-gradient(135deg, rgba(76,110,245,0.12) 0%, rgba(76,110,245,0.04) 100%)' } : undefined}
               >{s}</button>
             ))}
           </div>
         </div>
       </Section>
 
-      {/* Prices */}
+      {/* Prices & Size */}
       <Section title="Prices & Size">
         <div className="grid grid-cols-2 gap-3">
           <NumInput label="Entry price" value={entry} onChange={setEntry} placeholder="2340.00" />
-          <NumInput label="Lot size" value={lots} onChange={setLots} placeholder="0.10" />
+          <NumInput label="Lot size"    value={lots}  onChange={setLots}  placeholder="0.10" />
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <NumInput label="Stop Loss" value={sl} onChange={setSl} placeholder="2320.00" />
+          <NumInput label="Stop Loss"   value={sl} onChange={setSl} placeholder="2320.00" />
           <NumInput label="Take Profit" value={tp} onChange={setTp} placeholder="2380.00" />
         </div>
-
         <div>
-          <Label>Opened at</Label>
-          <input type="datetime-local" value={openTime} onChange={(e) => setOpenTime(e.target.value)}
-            className="w-full input-field px-3 py-3 text-text-primary text-[14px] focus:outline-none num" />
+          <FieldLabel>Opened at</FieldLabel>
+          <input type="datetime-local" value={openTime}
+            onChange={(e) => setOpenTime(e.target.value)}
+            className="w-full bg-surface-600 border border-surface-300 focus:border-brand-400 focus:outline-none rounded-[4px] px-3 py-3 text-ink-primary text-sm transition-colors duration-150 num"
+          />
         </div>
       </Section>
 
       {/* Outcome */}
       <Section title="Outcome">
         <div>
-          <Label>Status</Label>
+          <FieldLabel>Status</FieldLabel>
           <div className="grid grid-cols-2 gap-2">
             {(['active', 'closed'] as Status[]).map((s) => (
               <button key={s} type="button" onClick={() => setStatus(s)}
-                className={`py-3 rounded-xl text-[13px] font-semibold capitalize border transition-all ${
+                className={`py-3 rounded-[4px] text-sm font-semibold capitalize border transition-all duration-150 ${
                   status === s
-                    ? 'border-accent/60 text-accent'
-                    : 'border-ink-border bg-ink-muted text-text-secondary'
+                    ? 'border-brand-400/60 text-brand-400 bg-brand-400/10'
+                    : 'border-surface-300 bg-surface-600 text-ink-secondary hover:bg-surface-500'
                 }`}
-                style={status === s ? { background: 'linear-gradient(135deg, rgba(76,110,245,0.12) 0%, rgba(76,110,245,0.04) 100%)' } : undefined}
               >{s}</button>
             ))}
           </div>
@@ -214,16 +216,18 @@ export default function LogTradeForm() {
             <div className="grid grid-cols-2 gap-3">
               <NumInput label="Exit price" value={exitPrice} onChange={setExitPrice} placeholder="2365.00" />
               <div>
-                <Label>Closed at</Label>
-                <input type="datetime-local" value={closeTime} onChange={(e) => setCloseTime(e.target.value)}
-                  className="w-full input-field px-3 py-3 text-text-primary text-[14px] focus:outline-none num" />
+                <FieldLabel>Closed at</FieldLabel>
+                <input type="datetime-local" value={closeTime}
+                  onChange={(e) => setCloseTime(e.target.value)}
+                  className="w-full bg-surface-600 border border-surface-300 focus:border-brand-400 focus:outline-none rounded-[4px] px-3 py-3 text-ink-primary text-sm transition-colors duration-150 num"
+                />
               </div>
             </div>
 
             {pnlFmt && (
-              <div className="flex items-center justify-between bg-ink-muted rounded-xl px-4 py-3 border border-ink-border">
-                <span className="text-text-secondary text-[13px]">Calculated P&L</span>
-                <span className={`font-bold text-[18px] num ${pnlColor}`}>{pnlFmt}</span>
+              <div className="flex items-center justify-between bg-surface-700 rounded-[4px] px-4 py-3 border border-surface-300">
+                <span className="text-ink-secondary text-sm">Calculated P&L</span>
+                <span className={`font-mono font-bold text-lg num ${pnlColorClass}`}>{pnlFmt}</span>
               </div>
             )}
           </>
@@ -233,14 +237,14 @@ export default function LogTradeForm() {
       {/* Journal */}
       <Section title="Journal (optional)">
         <div>
-          <Label>Entry emotion</Label>
+          <FieldLabel>Entry emotion</FieldLabel>
           <div className="flex flex-wrap gap-2">
             {EMOTIONS.map((em) => (
               <button key={em} type="button" onClick={() => setEmotion(emotion === em ? '' : em)}
-                className={`px-3 py-1.5 rounded-lg text-[12px] font-medium border transition-all ${
+                className={`px-3 py-1.5 rounded-[4px] text-xs font-medium border transition-all duration-150 ${
                   emotion === em
-                    ? 'border-accent/60 text-accent bg-accent/10'
-                    : 'border-ink-border text-text-tertiary hover:border-ink-muted'
+                    ? 'border-brand-400/60 text-brand-400 bg-brand-400/10'
+                    : 'border-surface-300 bg-surface-600 text-ink-tertiary hover:bg-surface-500 hover:text-ink-secondary'
                 }`}
               >{em}</button>
             ))}
@@ -248,18 +252,20 @@ export default function LogTradeForm() {
         </div>
 
         <div>
-          <Label>Reasoning / notes</Label>
+          <FieldLabel>Reasoning / notes</FieldLabel>
           <textarea
             value={reasoning} onChange={(e) => setReasoning(e.target.value)}
             rows={3} placeholder="Why did you take this trade?"
-            className="w-full input-field px-3 py-3 text-text-primary text-[14px] resize-none focus:outline-none"
+            className="w-full bg-surface-600 border border-surface-300 focus:border-brand-400 focus:outline-none rounded-[4px] px-3 py-3 text-ink-primary text-sm placeholder:text-ink-tertiary resize-none transition-colors duration-150"
           />
         </div>
       </Section>
 
-      {error && <p className="text-down text-[13px] px-1">{error}</p>}
+      {error && (
+        <p className="text-danger-text text-sm px-1">{error}</p>
+      )}
 
-      <button type="submit" disabled={saving} className="w-full btn-primary py-4 text-[15px]">
+      <button type="submit" disabled={saving} className="btn-primary py-4 text-base">
         {saving ? 'Saving…' : 'Save trade'}
       </button>
     </form>
