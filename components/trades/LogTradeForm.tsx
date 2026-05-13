@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { calculatePnLUSD } from '@/utils/pnlCalculator'
+import { calculatePnLINR } from '@/utils/pnlCalculator'
 
 const PAIRS = ['XAUUSD', 'EURUSD', 'GBPUSD', 'USDJPY', 'GBPJPY', 'NIFTY', 'BANKNIFTY']
 const SESSIONS = ['Asian', 'London', 'New York', 'Overlap']
@@ -70,11 +70,20 @@ export default function LogTradeForm() {
   const [saving, setSaving]       = useState(false)
   const [error, setError]         = useState<string | null>(null)
 
+  const [usdToInr, setUsdToInr] = useState(83.5)
+
+  useEffect(() => {
+    fetch('https://api.exchangerate-api.com/v4/latest/USD')
+      .then((r) => r.json())
+      .then((d) => { if (d.rates?.INR) setUsdToInr(d.rates.INR) })
+      .catch(() => {})
+  }, [])
+
   const pnl = useCallback(() => {
     const e = parseFloat(entry), x = parseFloat(exitPrice), l = parseFloat(lots)
     if (!e || !x || !l || status !== 'closed') return null
-    return calculatePnLUSD(l, e, x, pair)
-  }, [entry, exitPrice, lots, pair, status])()
+    return calculatePnLINR(l, e, x, pair, usdToInr)
+  }, [entry, exitPrice, lots, pair, status, usdToInr])()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

@@ -1,5 +1,23 @@
 // M5.1 — Pure P&L calculation functions (fully unit testable)
-// All monetary values in USD ($)
+// calculatePnLUSD returns USD for forex/XAU pairs, native INR for Indian indices.
+// Call calculatePnLINR to get the final ₹ value to store in pnl_rupees.
+
+const DEFAULT_USD_INR = 83.5
+
+export function calculatePnLINR(
+  lots: number,
+  entry: number,
+  exit: number,
+  pair: string,
+  usdToInr: number = DEFAULT_USD_INR
+): number {
+  const usd = calculatePnLUSD(lots, entry, exit, pair)
+  // Indian indices are already in ₹ — no conversion needed
+  if (pair === 'NIFTY' || pair === 'BANKNIFTY' || pair === 'SENSEX') {
+    return parseFloat(usd.toFixed(2))
+  }
+  return parseFloat((usd * usdToInr).toFixed(2))
+}
 
 export function calculateLotSize(
   balance: number,

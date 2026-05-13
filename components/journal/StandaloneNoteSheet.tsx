@@ -1,7 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { Mic, MicOff, Loader2 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
+
+const WHISPER_ENABLED = process.env.NEXT_PUBLIC_WHISPER_ENABLED === 'true'
 
 export default function StandaloneNoteSheet({
   open,
@@ -10,12 +13,44 @@ export default function StandaloneNoteSheet({
   open: boolean
   onClose: () => void
 }) {
-  const [note, setNote]       = useState('')
-  const [emotion, setEmotion] = useState('')
-  const [saving, setSaving]   = useState(false)
-  const [saved, setSaved]     = useState(false)
+  const [note, setNote]           = useState('')
+  const [emotion, setEmotion]     = useState('')
+  const [saving, setSaving]       = useState(false)
+  const [saved, setSaved]         = useState(false)
+  const [recording, setRecording] = useState(false)
+  const [transcribing, setTranscribing] = useState(false)
+  const mediaRef = useRef<MediaRecorder | null>(null)
+  const chunksRef = useRef<Blob[]>([])
 
   const EMOTIONS = ['Confident', 'Calm', 'Patient', 'Anxious', 'FOMO', 'Revenge', 'Greedy', 'Uncertain']
+
+  async function toggleRecording() {
+    if (recording) {
+      mediaRef.current?.stop()
+      setRecording(false)
+      return
+    }
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+    const mr = new MediaRecorder(stream)
+    chunksRef.current = []
+    mr.ondataavailable = (e) => chunksRef.current.push(e.data)
+    mr.onstop = async () => {
+      stream.getTracks().forEach((t) => t.stop())
+      setTranscribing(true)
+      try {
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
+        const form = new FormData()
+        form.append('audio', blob, 'audio.webm')
+        const res = await fetch('/api/whisper', { method: 'POST', body: form })
+        const data = await res.json()
+        if (data.transcript) setNote((n) => n ? `${n} ${data.transcript}` : data.transcript)
+      } catch {}
+      setTranscribing(false)
+    }
+    mr.start()
+    mediaRef.current = mr
+    setRecording(true)
+  }
 
   async function handleSave() {
     if (!note.trim()) return
@@ -90,7 +125,28 @@ export default function StandaloneNoteSheet({
 
           {/* Note */}
           <div>
-            <p className="section-label mb-2">Your reflection</p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="section-label">Your reflection</p>
+              {WHISPER_ENABLED && (
+                <button
+                  type="button"
+                  onClick={toggleRecording}
+                  disabled={transcribing}
+                  className={`flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] text-xs font-medium border transition-all duration-150 ${
+                    recording
+                      ? 'bg-danger/15 border-danger/40 text-danger-text animate-pulse'
+                      : 'bg-surface-600 border-surface-300 text-ink-secondary hover:text-ink-primary'
+                  }`}
+                >
+                  {transcribing
+                    ? <><Loader2 className="w-3 h-3 animate-spin" /> Transcribing…</>
+                    : recording
+                    ? <><MicOff className="w-3 h-3" /> Stop</>
+                    : <><Mic className="w-3 h-3" /> Dictate</>
+                  }
+                </button>
+              )}
+            </div>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
