@@ -30,7 +30,13 @@ export default function AuthCallbackPage() {
           }),
         })
 
+        if (!response.ok) {
+          console.error('Device management API error:', response.status, response.statusText)
+          return // Continue with login even if device management fails
+        }
+
         const result = await response.json()
+        console.log('Device management result:', result)
 
         if (result.action === 'device_switched') {
           setMessage('Logged out from other device. Continuing…')
@@ -44,27 +50,41 @@ export default function AuthCallbackPage() {
     }
 
     async function resolveRedirect(userId: string) {
-      // Handle device management first
-      await handleDeviceManagement(userId)
+      try {
+        // Handle device management first
+        await handleDeviceManagement(userId)
 
-      const { data: profile } = await supabase
-        .from('users')
-        .select('onboarding_complete')
-        .eq('id', userId)
-        .maybeSingle()
-      
-      if (!profile) {
-        await supabase.from('users').insert({ id: userId })
+        const { data: profile, error: profileError } = await supabase
+          .from('users')
+          .select('onboarding_complete')
+          .eq('id', userId)
+          .maybeSingle()
+        
+        if (profileError) {
+          console.error('Profile fetch error:', profileError)
+        }
+        
+        if (!profile) {
+          console.log('Creating new user profile for:', userId)
+          await supabase.from('users').insert({ id: userId })
+          router.replace('/welcome')
+        } else {
+          console.log('User profile found, onboarding_complete:', profile.onboarding_complete)
+          router.replace(profile.onboarding_complete ? '/home' : '/welcome')
+        }
+      } catch (error) {
+        console.error('Resolve redirect error:', error)
+        // Fallback to welcome page if there's an error
         router.replace('/welcome')
-      } else {
-        router.replace(profile.onboarding_complete ? '/home' : '/welcome')
       }
     }
 
     // Handle session that already exists on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.id ? 'User found' : 'No session')
       if (session?.user && !handled.current) {
         handled.current = true
+        console.log('Handling initial session for user:', session.user.id)
         resolveRedirect(session.user.id)
         return
       }
@@ -73,9 +93,11 @@ export default function AuthCallbackPage() {
     // Handle session arriving via hash fragment (Google OAuth)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth state change:', event, session?.user?.id || 'No user')
         if (handled.current) return
         if (event === 'SIGNED_IN' && session?.user) {
           handled.current = true
+          console.log('Handling SIGNED_IN event for user:', session.user.id)
           resolveRedirect(session.user.id)
         }
       }

@@ -3,7 +3,6 @@
 
 import { createClient } from '@supabase/supabase-js'
 import { NextRequest, NextResponse } from 'next/server'
-import { validateDeviceSession, updateDeviceInfo, getDeviceInfo } from '@/lib/deviceFingerprint'
 
 export async function POST(request: NextRequest) {
   try {
@@ -30,6 +29,18 @@ export async function POST(request: NextRequest) {
       .single()
 
     if (userError || !currentUser) {
+      // If user not found, create the user record
+      if (userError?.code === 'PGRST116') {
+        await supabaseAdmin
+          .from('users')
+          .insert({ 
+            id: userId,
+            current_device_id: deviceFingerprint,
+            device_fingerprint: deviceFingerprint,
+            last_active_at: new Date().toISOString()
+          })
+        return NextResponse.json({ success: true, action: 'new_device' })
+      }
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
@@ -38,16 +49,14 @@ export async function POST(request: NextRequest) {
 
     // If user has no current device, allow login
     if (!currentUser.current_device_id) {
-      const deviceInfo = {
-        fingerprint: deviceFingerprint,
-        userAgent: request.headers.get('user-agent') || '',
-        language: '',
-        timezone: '',
-        screenResolution: '',
-        platform: '',
-      }
-
-      await updateDeviceInfo(supabaseAdmin, userId, deviceInfo)
+      await supabaseAdmin
+        .from('users')
+        .update({ 
+          current_device_id: deviceFingerprint,
+          device_fingerprint: deviceFingerprint,
+          last_active_at: new Date().toISOString()
+        })
+        .eq('id', userId)
       return NextResponse.json({ success: true, action: 'new_device' })
     }
 
@@ -74,16 +83,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Update to new device
-    const deviceInfo = {
-      fingerprint: deviceFingerprint,
-      userAgent: request.headers.get('user-agent') || '',
-      language: '',
-      timezone: '',
-      screenResolution: '',
-      platform: '',
-    }
-
-    await updateDeviceInfo(supabaseAdmin, userId, deviceInfo)
+    await supabaseAdmin
+      .from('users')
+      .update({ 
+        current_device_id: deviceFingerprint,
+        device_fingerprint: deviceFingerprint,
+        last_active_at: new Date().toISOString()
+      })
+      .eq('id', userId)
 
     return NextResponse.json({ 
       success: true, 
