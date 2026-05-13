@@ -1,10 +1,20 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Space_Grotesk, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({
+// Primary UI font — geometric, precise, premium
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  variable: '--font-inter',
+  variable: '--font-sans',
+  weight: ['400', '500', '700'],
+  display: 'swap',
+})
+
+// Monospace — P&L numbers, prices, lot sizes
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  weight: ['400', '600'],
   display: 'swap',
 })
 
@@ -20,7 +30,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: '#0C0C0F',
+  themeColor: '#0A0A0F',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -33,8 +43,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} dark`}>
-      <body className={`${inter.variable} font-sans antialiased`}>
+    <html lang="en" className={`${spaceGrotesk.variable} ${jetbrainsMono.variable} dark`}>
+      <body className={`${spaceGrotesk.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>

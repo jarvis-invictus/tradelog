@@ -6,7 +6,7 @@
 
 const nextConfig = {
   reactStrictMode: true,
-  turbopack: {},
+  // Removed turbopack: {} for Vercel compatibility
   allowedDevOrigins: ['127.0.0.1', 'localhost'],
 }
 
