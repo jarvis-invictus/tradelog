@@ -14,6 +14,10 @@ export default function GoogleSignInButton() {
       provider: 'google',
       options: {
         redirectTo: `${siteUrl}/auth/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
       },
     })
     // No need to setLoading(false) — page will redirect

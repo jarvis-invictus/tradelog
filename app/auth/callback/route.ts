@@ -6,6 +6,9 @@ export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
 
+  console.log('[auth/callback] received. code present:', !!code, 'origin:', origin)
+  console.log('[auth/callback] all cookies:', request.cookies.getAll().map(c => c.name))
+
   if (code) {
     const cookieStore = await cookies()
 
@@ -30,7 +33,8 @@ export async function GET(request: NextRequest) {
       }
     )
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
+    const { error, data } = await supabase.auth.exchangeCodeForSession(code)
+    console.log('[auth/callback] exchangeCodeForSession result:', { error: error?.message, userId: data?.user?.id })
 
     if (!error) {
       const { data: { user } } = await supabase.auth.getUser()
