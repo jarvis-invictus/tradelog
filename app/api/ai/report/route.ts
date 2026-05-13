@@ -5,7 +5,7 @@
 import { NextRequest } from 'next/server'
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { createServerClient } from '@/lib/supabase/server'
-import { buildWeeklyReportPrompt, generateWeeklyReport } from '@/lib/ai'
+import { buildWeeklyReportPrompt, generateWeeklyReport, isAIConfigured } from '@/lib/ai'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function generateForUser(supabaseAdmin: SupabaseClient<any>, userId: string) {
@@ -42,7 +42,7 @@ async function generateForUser(supabaseAdmin: SupabaseClient<any>, userId: strin
 }
 
 export async function GET(request: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!isAIConfigured()) {
     return Response.json({ error: 'Integration not configured' }, { status: 503 })
   }
 
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST() {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!isAIConfigured()) {
     return Response.json({ error: 'Integration not configured' }, { status: 503 })
   }
 

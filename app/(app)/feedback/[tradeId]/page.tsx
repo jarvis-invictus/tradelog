@@ -8,7 +8,7 @@ export default async function FeedbackPage({ params }: { params: { tradeId: stri
   const supabase = await createServerClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  const [tradeRes, journalRes, feedbackRes] = await Promise.all([
+  const [tradeRes, journalRes, feedbackRes, profileRes] = await Promise.all([
     supabase
       .from('trades')
       .select('id, pair, direction, pnl_rupees, session, lot_size, entry_price, exit_price, status, created_at')
@@ -26,6 +26,11 @@ export default async function FeedbackPage({ params }: { params: { tradeId: stri
       .select('feedback_text, generated_at')
       .eq('trade_id', params.tradeId)
       .eq('user_id', user?.id ?? '')
+      .maybeSingle(),
+    supabase
+      .from('users')
+      .select('plan')
+      .eq('id', user?.id ?? '')
       .maybeSingle(),
   ])
 
@@ -47,7 +52,8 @@ export default async function FeedbackPage({ params }: { params: { tradeId: stri
           feedback_text: feedbackRes.data.feedback_text as string,
           generated_at:  feedbackRes.data.generated_at as string,
         } : null}
-        aiEnabled={!!process.env.ANTHROPIC_API_KEY}
+        aiEnabled={!!(process.env.ANTHROPIC_API_KEY || process.env.GROQ_API_KEY)}
+        isPro={(profileRes.data?.plan ?? 'free') === 'pro'}
       />
     </div>
   )

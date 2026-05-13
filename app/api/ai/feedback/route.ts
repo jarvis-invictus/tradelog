@@ -1,9 +1,9 @@
 import { NextRequest } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
-import { buildFeedbackPrompt, generateFeedback } from '@/lib/ai'
+import { buildFeedbackPrompt, generateFeedback, isAIConfigured } from '@/lib/ai'
 
 export async function POST(request: NextRequest) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!isAIConfigured()) {
     return Response.json({ error: 'Integration not configured' }, { status: 503 })
   }
 

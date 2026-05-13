@@ -50,11 +50,13 @@ export default function FeedbackClient({
   journal,
   existingFeedback,
   aiEnabled,
+  isPro = true,
 }: {
   trade: Trade
   journal: Journal
   existingFeedback: Feedback
   aiEnabled: boolean
+  isPro?: boolean
 }) {
   const [feedback, setFeedback]   = useState<Feedback>(existingFeedback)
   const [loading, setLoading]     = useState(false)
@@ -115,8 +117,19 @@ export default function FeedbackClient({
           <Sparkles className="w-8 h-8 text-ink-tertiary mx-auto" />
           <p className="text-ink-primary font-semibold text-sm">AI feedback not configured</p>
           <p className="text-ink-secondary text-sm leading-relaxed max-w-xs mx-auto">
-            Add your <code className="bg-surface-600 px-1 rounded text-brand-400">ANTHROPIC_API_KEY</code> to get personalised Claude AI analysis for every trade.
+            Set <code className="bg-surface-600 px-1 rounded text-brand-400">ANTHROPIC_API_KEY</code> or <code className="bg-surface-600 px-1 rounded text-brand-400">GROQ_API_KEY</code> to enable AI analysis.
           </p>
+        </div>
+      ) : !isPro ? (
+        <div className="card p-6 text-center space-y-3">
+          <Sparkles className="w-8 h-8 text-brand-400 mx-auto" />
+          <p className="text-ink-primary font-semibold text-sm">Pro feature</p>
+          <p className="text-ink-secondary text-sm leading-relaxed max-w-xs mx-auto">
+            AI trade feedback is available on the Pro plan.
+          </p>
+          <a href="/upgrade" className="btn-primary !w-auto px-6 py-2.5 text-sm inline-block">
+            Upgrade to Pro
+          </a>
         </div>
       ) : feedback ? (
         <div className="card overflow-hidden">

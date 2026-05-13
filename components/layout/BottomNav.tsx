@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, BarChart2, Calculator, Shield, BookOpen } from 'lucide-react'
+import { Home, BarChart2, Calculator, Shield, BookOpen, Sparkles } from 'lucide-react'
 
 const NAV_ITEMS = [
   { href: '/home',       label: 'Home',        icon: Home },
@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: '/calculator', label: 'Calculator',  icon: Calculator },
   { href: '/analytics',  label: 'Analytics',   icon: BarChart2 },
   { href: '/rules',      label: 'Rules',       icon: Shield },
+  { href: '/upgrade',    label: 'Pro',         icon: Sparkles },
 ]
 
 export default function BottomNav() {

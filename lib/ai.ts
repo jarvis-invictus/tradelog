@@ -1,5 +1,5 @@
-// Claude AI — server-side only.
-// Model: claude-3-5-sonnet-20241022
+// AI layer — server-side only.
+// Priority: ANTHROPIC_API_KEY (Claude) → GROQ_API_KEY (llama-3.3-70b) → error
 // All P&L always in ₹. Never mentions pips. Responds in user's language.
 
 type Trade = Record<string, unknown>
@@ -7,9 +7,7 @@ type Journal = Record<string, unknown> | null
 type Rule = Record<string, unknown>
 
 async function callClaude(prompt: string, maxTokens = 1024): Promise<string> {
-  const apiKey = process.env.ANTHROPIC_API_KEY
-  if (!apiKey) throw new Error('ANTHROPIC_API_KEY not configured')
-
+  const apiKey = process.env.ANTHROPIC_API_KEY!
   const res = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -23,14 +21,38 @@ async function callClaude(prompt: string, maxTokens = 1024): Promise<string> {
       messages: [{ role: 'user', content: prompt }],
     }),
   })
-
-  if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`Claude API error: ${err}`)
-  }
-
+  if (!res.ok) { const err = await res.text(); throw new Error(`Claude API error: ${err}`) }
   const data = await res.json() as { content: Array<{ text: string }> }
   return data.content[0]?.text ?? ''
+}
+
+async function callGroq(prompt: string, maxTokens = 1024): Promise<string> {
+  const apiKey = process.env.GROQ_API_KEY!
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'llama-3.3-70b-versatile',
+      max_tokens: maxTokens,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+  })
+  if (!res.ok) { const err = await res.text(); throw new Error(`Groq API error: ${err}`) }
+  const data = await res.json() as { choices: Array<{ message: { content: string } }> }
+  return data.choices[0]?.message?.content ?? ''
+}
+
+async function callAI(prompt: string, maxTokens = 1024): Promise<string> {
+  if (process.env.ANTHROPIC_API_KEY) return callClaude(prompt, maxTokens)
+  if (process.env.GROQ_API_KEY)      return callGroq(prompt, maxTokens)
+  throw new Error('No AI API key configured. Set ANTHROPIC_API_KEY or GROQ_API_KEY.')
+}
+
+export function isAIConfigured(): boolean {
+  return !!(process.env.ANTHROPIC_API_KEY || process.env.GROQ_API_KEY)
 }
 
 export function buildFeedbackPrompt(
@@ -115,9 +137,9 @@ Keep it under 400 words. Be honest and direct.`
 }
 
 export async function generateFeedback(prompt: string): Promise<string> {
-  return callClaude(prompt, 800)
+  return callAI(prompt, 800)
 }
 
 export async function generateWeeklyReport(prompt: string): Promise<string> {
-  return callClaude(prompt, 1200)
+  return callAI(prompt, 1200)
 }
